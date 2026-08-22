@@ -159,6 +159,43 @@ def _group_summary(rows: list[dict[str, Any]], key: str) -> dict[str, Any]:
     return result
 
 
+def _macro_bootstrap(rows: list[dict[str, Any]], key: str, seed: int = 0, replicates: int = 1000) -> dict[str, Any]:
+    """Bootstrap the unweighted mean of per-group geodesic means."""
+
+    groups: dict[str, list[float]] = {}
+    for row in rows:
+        groups.setdefault(str(row[key]), []).append(float(row["geodesic_error_deg"]))
+    group_means = np.asarray([np.mean(values) for _, values in sorted(groups.items())], dtype=np.float64)
+    if len(group_means) == 0:
+        return {"groups": 0, "mean_geodesic_deg": None, "bootstrap_95ci_deg": None}
+    generator = np.random.default_rng(seed)
+    draws = generator.choice(group_means, size=(replicates, len(group_means)), replace=True).mean(axis=1)
+    return {
+        "groups": int(len(group_means)),
+        "mean_geodesic_deg": float(group_means.mean()),
+        "bootstrap_95ci_deg": [float(np.quantile(draws, 0.025)), float(np.quantile(draws, 0.975))],
+        "bootstrap_seed": seed,
+        "bootstrap_replicates": replicates,
+    }
+
+
+def _validity_reason_codes(row: dict[str, Any]) -> list[str]:
+    reasons = []
+    if not row["scale_agreement_valid"]:
+        reasons.append("scale_agreement_unavailable")
+    if not row["temporal_agreement_valid"]:
+        reasons.append("temporal_agreement_unavailable_for_current_state")
+    if not row["on_off_agreement_valid"]:
+        reasons.append("on_off_agreement_unavailable")
+    if not row["observability_valid"]:
+        reasons.append("observability_invalid")
+    if not row["global_reliability_valid"]:
+        reasons.append("global_reliability_invalid")
+    if abs(row["directional_residual_wrong_sign"] - row["directional_residual_gt"]) < 0.10:
+        reasons.append("wrong_sign_oracle_not_discriminative")
+    return reasons
+
+
 def _summary(rows: list[dict[str, Any]], split: str, target_count: int, intrinsics_mode: str) -> dict[str, Any]:
     errors = [row["geodesic_error_deg"] for row in rows]
     fields = {
@@ -214,12 +251,38 @@ def _summary(rows: list[dict[str, Any]], split: str, target_count: int, intrinsi
         "availability": {
             key: float(np.mean([bool(row[key]) for row in rows])) for key in availability_fields
         },
+        "validity_reason_counts": {
+            reason: sum(reason in row["validity_reason_codes"] for row in rows)
+            for reason in sorted({reason for row in rows for reason in row["validity_reason_codes"]})
+        },
+        "oracle_contract": {
+            "wrong_sign_separation_mean": float(
+                np.mean([row["directional_residual_wrong_sign"] - row["directional_residual_gt"] for row in rows])
+            )
+            if rows
+            else None,
+            "wrong_sign_separation_median": float(
+                np.median([row["directional_residual_wrong_sign"] - row["directional_residual_gt"] for row in rows])
+            )
+            if rows
+            else None,
+            "required_median_separation": 0.10,
+            "status": "pass"
+            if rows
+            and float(np.median([row["directional_residual_wrong_sign"] - row["directional_residual_gt"] for row in rows])) >= 0.10
+            else "unresolved",
+        },
+        "macro_bootstrap": {
+            "trajectory": _macro_bootstrap(rows, "trajectory"),
+            "environment": _macro_bootstrap(rows, "environment"),
+        },
         "groups": {
             "environment": _group_summary(rows, "environment"),
             "trajectory": _group_summary(rows, "trajectory"),
             "rotation_magnitude_bin": _group_summary(rows, "rotation_magnitude_bin"),
             "motion_energy_bin": _group_summary(rows, "motion_energy_bin"),
             "spatial_support_bin": _group_summary(rows, "spatial_support_bin"),
+            "axis_bin": _group_summary(rows, "axis_bin"),
         },
     }
 
@@ -287,8 +350,23 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
                 residual_wrong = float(wrong_diag["directional_residual_ratio"][item_index, 0, 0].detach().cpu())
                 support = float(output["spatial_support_score"][item_index, -1, 0].detach().cpu())
                 energy_total = float(output["observed_total_energy"][item_index, -1].sum().detach().cpu())
-                rows.append(
-                    {
+                target_vector = targets[item_index]
+                prediction_vector = predictions[item_index, 0]
+                target_norm = float(torch.linalg.vector_norm(target_vector).detach().cpu())
+                prediction_norm = float(torch.linalg.vector_norm(prediction_vector).detach().cpu())
+                if target_norm < 0.02:
+                    axis_bin = "near_zero"
+                    axis_cosine = None
+                else:
+                    dominant = int(torch.argmax(target_vector.abs()).detach().cpu())
+                    axis_name = ("x", "y", "z")[dominant]
+                    axis_bin = f"{'+' if float(target_vector[dominant]) >= 0 else '-'}{axis_name}"
+                    axis_cosine = (
+                        float(torch.dot(target_vector, prediction_vector).detach().cpu()) / (target_norm * prediction_norm)
+                        if prediction_norm > 1e-8
+                        else None
+                    )
+                row = {
                         "record_index": record_index,
                         "sample_index": int(indices[batch_offset * args.batch_size + item_index]),
                         "environment": metadata["environment"],
@@ -300,6 +378,8 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
                         "motion_energy_bin": _bin(energy_total, (1.0, 10.0, 100.0), ("low", "medium", "high")),
                         "spatial_support": support,
                         "spatial_support_bin": _bin(support, (0.5, 0.8, 0.95), ("localized", "mixed", "broad")),
+                        "axis_bin": axis_bin,
+                        "axis_cosine": axis_cosine,
                         "directional_residual_pred": residual_pred,
                         "directional_residual_gt": residual_gt,
                         "directional_residual_zero": residual_zero,
@@ -317,7 +397,8 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
                         "on_off_agreement_score": _json_value(output["on_off_agreement_score"][item_index, -1, 0]),
                         "scale_agreement_score": _json_value(output["scale_agreement_score"][item_index, -1, 0]),
                     }
-                )
+                row["validity_reason_codes"] = _validity_reason_codes(row)
+                rows.append(row)
     result = {
         "checkpoint_config": checkpoint.get("config", {}),
         "split": args.split,
