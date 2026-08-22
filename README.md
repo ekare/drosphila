@@ -152,6 +152,10 @@ See [`docs/USAGE.md`](docs/USAGE.md) for the longer usage guide and
 [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the model map. The
 rotation-residual diagnostic and its current evidence are described in
 [`docs/rotation_residual_report.md`](docs/rotation_residual_report.md).
+The pose/image convention, roadmap, and explicit limitations are documented
+in [`docs/POSE_IMAGE_CONVENTION.md`](docs/POSE_IMAGE_CONVENTION.md),
+[`docs/ROADMAP.md`](docs/ROADMAP.md), and
+[`docs/LIMITATIONS.md`](docs/LIMITATIONS.md).
 
 ## License and data
 
