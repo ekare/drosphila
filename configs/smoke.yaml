@@ -1,0 +1,6 @@
+image_size: 64
+frame_gaps: [1, 4]
+window_length: 3
+batch_size: 4
+max_steps: 20
+device: cuda:0

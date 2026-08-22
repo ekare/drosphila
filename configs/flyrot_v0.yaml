@@ -1,0 +1,20 @@
+model: flyrot_motion_direct
+scales: [4, 8, 16]
+image_size: 128
+window_length: 3
+frame_gap: 4
+target_direction: optical_image_motion
+parameter_budget: 50000
+confidence:
+  type: predicted_magnitude_proxy
+  center: 0.0103562189
+  scale: 0.0052184332
+  calibration_source: train_split_4096_windows_step1200
+loss:
+  geodesic_weight: 1.0
+  huber_weight: 0.25
+  uncertainty_weight: 0.1
+  step_loss_weight: 0.0
+runtime:
+  dtype: float32
+  device: auto

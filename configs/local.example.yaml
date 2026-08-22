@@ -1,0 +1,6 @@
+# Machine-local settings. Copy to configs/local.yaml and edit locally.
+data_roots:
+  - ./data/tartanair-v2
+run_dir: ./runs
+device: auto
+seed: 0
