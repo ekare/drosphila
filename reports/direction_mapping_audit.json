@@ -1,0 +1,39 @@
+{
+  "contract": {
+    "canonical_order": ["E", "SE", "S", "SW", "W", "NW", "N", "NE"],
+    "legacy_order": ["E", "NE", "N", "NW", "W", "SW", "S", "SE"],
+    "legacy_to_canonical": [0, 7, 6, 5, 4, 3, 2, 1],
+    "coordinate_system": "x right positive, y down positive, east-start clockwise",
+    "weights_changed": false
+  },
+  "historical_legacy_as_canonical": {
+    "best_physical_mapping": "flip_y",
+    "best_population_vector_median_error_deg": 0.0,
+    "transforms": {
+      "identity": 90.0,
+      "rot90_cw": 90.0,
+      "rot180": 90.0,
+      "rot270_cw": 90.0,
+      "flip_x": 180.0,
+      "flip_y": 0.0,
+      "flip_xy": 90.0,
+      "reflect_swap": 90.0
+    },
+    "interpretation": "The old evaluator view is y-flipped when its channel order is treated as canonical."
+  },
+  "historical_explicit_legacy_to_canonical": {
+    "best_physical_mapping": "identity",
+    "best_population_vector_median_error_deg": 0.0,
+    "transforms": {
+      "identity": 0.0,
+      "rot90_cw": 90.0,
+      "rot180": 180.0,
+      "rot270_cw": 90.0,
+      "flip_x": 90.0,
+      "flip_y": 90.0,
+      "flip_xy": 180.0,
+      "reflect_swap": 90.0
+    }
+  },
+  "status": "validation_contract_bug_confirmed"
+}

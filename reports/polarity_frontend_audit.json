@@ -1,0 +1,36 @@
+{
+  "pure_edge_definition": "A translating half-plane where each valid pixel changes at most once.",
+  "mixed_polarity_excluded": ["bar", "patch", "grating", "contrast_reversal"],
+  "variants": {
+    "P0": {
+      "definition": "Existing local log-luminance z-score photoreceptor.",
+      "on_edge_off_leakage": 0.832519,
+      "off_edge_on_leakage": 0.832519,
+      "on_direction_median_error_deg": 0.000002,
+      "off_direction_median_error_deg": 0.0,
+      "on_direction_cosine_sign_accuracy": 1.0,
+      "off_direction_cosine_sign_accuracy": 1.0
+    },
+    "P1": {
+      "definition": "Log-luminance temporal difference with local common-mode subtraction.",
+      "on_edge_off_leakage": 0.821851,
+      "off_edge_on_leakage": 0.821851,
+      "on_direction_median_error_deg": 0.000002,
+      "off_direction_median_error_deg": 0.000002,
+      "on_direction_cosine_sign_accuracy": 1.0,
+      "off_direction_cosine_sign_accuracy": 1.0
+    },
+    "P2": {
+      "definition": "Temporal difference followed by sign-preserving divisive adaptation.",
+      "on_edge_off_leakage": 0.0,
+      "off_edge_on_leakage": 0.0,
+      "on_direction_median_error_deg": 0.0,
+      "off_direction_median_error_deg": 0.0,
+      "on_direction_cosine_sign_accuracy": 1.0,
+      "off_direction_cosine_sign_accuracy": 1.0
+    }
+  },
+  "active_frontend_status": "failed",
+  "failure_stage": "P0 local adaptation before the direction-cell bank",
+  "interpretation": "Direction can decode correctly while polarity separation fails."
+}

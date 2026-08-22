@@ -1,0 +1,17 @@
+{
+  "schema": "flyrot.orientation-memory.v1",
+  "status": "experimental_not_release_validated",
+  "implementation": {
+    "step_output": true,
+    "ordered_so3_matrix_composition": true,
+    "non_commuting_synthetic_test": "pass",
+    "parameter_count": 829
+  },
+  "held_out_comparison": {
+    "v1_test_mse": 0.02126929722726345,
+    "v0_3_test_mse": 0.021247463300824165,
+    "v1_mean_geodesic_deg": 12.645468711853027,
+    "v0_3_mean_geodesic_deg": 12.635311126708984
+  },
+  "release_decision": "retain_experimental_only"
+}

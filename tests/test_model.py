@@ -3,6 +3,7 @@ import torch
 from flyrot.geometry.rotational_flow import finite_difference_rotational_flow_basis, rotational_flow_basis
 from flyrot.models.direction_cells import DirectionCellBank
 from flyrot.models.flyrot_v0 import FlyRotV0
+from flyrot.models.flyrot_v1 import FlyRotV1, compose_step_rotations
 from flyrot.models.tiny_conv_baseline import TinyConvBaseline
 
 
@@ -13,6 +14,34 @@ def test_direction_cell_channel_contract_matches_forward_tensor():
     assert bank.channels_per_polarity == 24
     assert bank.channels == energy.shape[2] == valid.shape[2] == 24
     assert bank.separate_polarity_channels == on_energy.shape[2] + off_energy.shape[2] == 48
+
+
+def test_flyrot_v1_has_separate_polarity_field_and_so3_composition():
+    model = FlyRotV1()
+    assert sum(parameter.numel() for parameter in model.parameters()) < 50_000
+    frames = torch.rand(2, 4, 3, 32, 32, requires_grad=True)
+    output = model(frames)
+    assert output["rotation_vector"].shape == (2, 3, 3)
+    assert output["step_rotation_vector"].shape == (2, 3, 3)
+    assert output["retinotopic_field"].shape == (2, 3, 2, 8, 8)
+    assert output["on_motion_energy"].shape == output["off_motion_energy"].shape
+    loss = output["rotation_vector"].square().mean() + output["step_rotation_vector"].square().mean() + output["log_variance"].square().mean()
+    loss.backward()
+    assert all(parameter.grad is not None for parameter in model.parameters() if parameter.requires_grad)
+    diagnostic = model(frames.detach(), diagnostics=True)
+    assert diagnostic["directional_residual_ratio"].shape == (2, 3, 1)
+    assert diagnostic["old_confidence"].shape == (2, 3, 1)
+
+
+def test_compose_step_rotations_matches_matrix_product():
+    steps = torch.tensor([[[0.1, 0.0, 0.0], [0.0, 0.2, 0.0]]], dtype=torch.float64)
+    matrices, vectors = compose_step_rotations(steps)
+    expected = torch.matrix_exp(torch.tensor([[0.0, 0.0, 0.0], [0.0, 0.0, -0.1], [0.0, 0.1, 0.0]], dtype=torch.float64))
+    assert torch.allclose(matrices[0, 0], expected, atol=1e-6, rtol=1e-6)
+    step_y = torch.matrix_exp(torch.tensor([[0.0, 0.0, 0.2], [0.0, 0.0, 0.0], [-0.2, 0.0, 0.0]], dtype=torch.float64))
+    expected_endpoint = expected @ step_y
+    assert torch.allclose(matrices[0, 1], expected_endpoint, atol=5e-5, rtol=5e-5)
+    assert torch.isfinite(vectors).all()
 
 
 def test_rotational_flow_basis_matches_finite_difference():

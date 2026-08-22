@@ -1,0 +1,12 @@
+{
+  "status": "failed",
+  "failure_classes": ["local_field_failure", "cell_direction_failure", "polarity_failure"],
+  "commit": "abfa1118abec8d586da2b61f5a14f33a5f7f4031",
+  "checkpoint_sha256": "3d26a94a50a30a5b95bc30f9e982e045b201c88b8d5d3e8e4e2409bb49bcf81f",
+  "validation": {
+    "T3": {"median_angular_error_deg": 89.13827856655779, "direction_accuracy": 0.5110445104796311, "magnitude_spearman": -0.2736725481164674, "epe_improvement_vs_zero": -2.933852717280388},
+    "T5": {"median_angular_error_deg": 89.73715718587239, "direction_accuracy": 0.49788016825914383, "magnitude_spearman": -0.28116550984134053, "epe_improvement_vs_zero": -2.8504446571071944},
+    "T7": {"median_angular_error_deg": 95.1984476361956, "direction_accuracy": 0.44733613977829617, "magnitude_spearman": -0.3531085241263262, "epe_improvement_vs_zero": -2.732168232401212}
+  },
+  "gate": {"median_angular_error_deg_max": 15.0, "direction_accuracy_min": 0.9, "magnitude_spearman_min": 0.7, "epe_improvement_min": 0.5}
+}

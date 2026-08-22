@@ -1,0 +1,11 @@
+name: t4t5-inspired-cell-validation-v0.3.1
+seed: 20260823
+raster: [160, 128]
+steps: 5
+angles_deg: [0, 45, 90, 135, 180, 225, 270, 315]
+displacements_px_per_step: [0.5, 1, 2, 4, 8, 12, 16]
+contrasts: [low, medium, high]
+current_scales: [4, 8, 16]
+small_motion_correction_candidate: [1, 2, 4, 8]
+border_margin_px: 18
+claim_boundary: T4/T5-inspired engineering validation; not biological equivalence
