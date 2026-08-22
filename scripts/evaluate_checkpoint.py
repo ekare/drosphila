@@ -12,6 +12,7 @@ from torch.utils.data import DataLoader
 
 from flyrot.data.tartanair import TartanAirWindowDataset, default_split
 from flyrot.models.flyrot_v0 import FlyRotV0
+from flyrot.models.flyrot_v1 import FlyRotV1
 from flyrot.models.tiny_conv_baseline import TinyConvBaseline
 
 
@@ -51,7 +52,9 @@ def main() -> None:
     records = default_split(records)[args.split]
     checkpoint = torch.load(args.checkpoint, map_location=args.device, weights_only=False)
     model_name = checkpoint.get("config", {}).get("model", "flyrot")
-    if model_name == "flyrot_gated":
+    if model_name == "flyrot_v1":
+        model = FlyRotV1().to(args.device)
+    elif model_name == "flyrot_gated":
         model = FlyRotV0(confidence_gated=True, readout_scale=8.0).to(args.device)
     elif model_name == "flyrot_magnitude_gated":
         model = FlyRotV0(confidence_gated=True, readout_scale=8.0, magnitude_aware=True).to(args.device)

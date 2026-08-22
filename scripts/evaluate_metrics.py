@@ -67,11 +67,17 @@ def main() -> None:
                 predictions.append(output["rotation_vector"][:, -1].cpu())
                 targets.append(batch["target_rotation_vector"])
                 confidences.append(output["confidence"][:, -1, 0].cpu())
-                coherences.append(
-                    model.rotation_evidence.rotational_coherence(output["direction_energy"], output["valid_mask"])
-                    [:, -1, 0]
-                    .cpu()
-                )
+                evidence_module = getattr(model, "rotation_evidence", None)
+                if evidence_module is None:
+                    evidence_module = getattr(model, "on_rotation_evidence", None)
+                if evidence_module is None:
+                    coherences.append(torch.ones(len(batch["frames"])))
+                else:
+                    coherences.append(
+                        evidence_module.rotational_coherence(output["direction_energy"], output["valid_mask"])
+                        [:, -1, 0]
+                        .cpu()
+                    )
             prediction = torch.cat(predictions)
             target = torch.cat(targets)
             confidence = torch.cat(confidences)
