@@ -118,7 +118,52 @@ The rotation vector is a relative camera rotation in the convention selected
 by the training target. The confidence output is a useful ranking/abstention
 signal, not a calibrated probability.
 
-## 7. Verification before publishing
+## 7. Inspect the rotation residual
+
+The diagnostic path keeps the model's native non-negative direction energy
+maps. It compares them with the exact perspective image displacement induced
+by the predicted SO(3) rotation. The flow-like images in the output are
+diagnostic pseudo-flow visualizations; they are not optical-flow inputs or
+targets.
+
+Run the deterministic geometry smoke test without a dataset:
+
+```bash
+python scripts/rotation_residual.py \
+  --synthetic-smoke-test \
+  --save-video \
+  --output artifacts/rotation_residual_smoke
+```
+
+Run it on a local validation or held-out test index:
+
+```bash
+python scripts/rotation_residual.py \
+  --checkpoint models/flyrot_v0_best.pt \
+  --index artifacts/tartanair2_index.json \
+  --split validation \
+  --sample-count 6 \
+  --output artifacts/rotation_residual \
+  --preload-images
+```
+
+The output contains native ON/OFF energy, observed/explained/residual energy,
+three scale residuals, normalized spatial support, scale/temporal/ON/OFF
+agreement, observability eigenvalues, and energy accounting. A matching
+rotation should leave a small oracle residual; brightness, translation, and a
+localized moving patch should remain residual rather than being explained as
+camera rotation. The current release checkpoint's real-data results are an
+honest diagnostic baseline, not calibrated uncertainty.
+
+Shortcut checks use the same model path:
+
+```bash
+python scripts/rotation_residual_shortcuts.py \
+  --checkpoint models/flyrot_v0_best.pt \
+  --output artifacts/rotation_residual_shortcuts
+```
+
+## 8. Verification before publishing
 
 ```bash
 pytest -q

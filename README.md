@@ -121,7 +121,9 @@ RGB frames -> adaptive luminance -> ON/OFF changes
 ```
 
 See [`docs/USAGE.md`](docs/USAGE.md) for the longer usage guide and
-[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the model map.
+[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the model map. The
+rotation-residual diagnostic and its current evidence are described in
+[`docs/rotation_residual_report.md`](docs/rotation_residual_report.md).
 
 ## License and data
 

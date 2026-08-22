@@ -140,3 +140,26 @@ def test_flyrot_intrinsics_stretched_forward_backward():
     loss = output["rotation_vector"].square().mean() + 0.01 * output["log_variance"].square().mean()
     loss.backward()
     assert all(parameter.grad is not None for parameter in model.parameters() if parameter.requires_grad)
+
+
+def test_flyrot_diagnostics_flag_preserves_default_path_and_exposes_components():
+    model = FlyRotV0(scales=(4, 8, 16), magnitude_confidence=True)
+    frames = torch.rand(2, 4, 1, 32, 32)
+    default = model(frames)
+    diagnostic = model(frames, diagnostics=True)
+
+    assert diagnostic["rotation_vector"].shape == default["rotation_vector"].shape
+    assert torch.allclose(diagnostic["rotation_vector"], default["rotation_vector"])
+    assert diagnostic["on_motion_energy"].shape == diagnostic["direction_energy"].shape
+    assert diagnostic["off_motion_energy"].shape == diagnostic["direction_energy"].shape
+    assert diagnostic["residual_ratio"].shape == (2, 3, 1)
+    assert diagnostic["axis_confidence"].shape == (2, 3, 3)
+    assert diagnostic["global_confidence"].shape == (2, 3, 1)
+    for key in (
+        "on_motion_energy",
+        "off_motion_energy",
+        "residual_ratio",
+        "axis_confidence",
+        "global_confidence",
+    ):
+        assert torch.isfinite(diagnostic[key]).all()

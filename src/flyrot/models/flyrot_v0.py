@@ -5,6 +5,8 @@ from __future__ import annotations
 import torch
 from torch import nn
 
+from flyrot.diagnostics import build_rotation_residual_diagnostics
+
 from .accumulator import CausalEvidenceAccumulator
 from .direction_cells import DirectionCellBank
 from .photoreceptor import Photoreceptor
@@ -70,9 +72,13 @@ class FlyRotV0(nn.Module):
             self.uncertainty_readout = nn.Linear(evidence_channels, 3, bias=False)
             nn.init.zeros_(self.uncertainty_readout.weight)
 
-    def forward(self, frames: torch.Tensor) -> dict[str, torch.Tensor]:
+    def forward(self, frames: torch.Tensor, diagnostics: bool = False) -> dict[str, torch.Tensor]:
         on, off = self.photoreceptor(frames)
-        energy, valid = self.direction_cells(on, off)
+        direction_output = self.direction_cells(on, off, return_components=diagnostics)
+        if diagnostics:
+            energy, valid, on_energy, off_energy = direction_output
+        else:
+            energy, valid = direction_output
         evidence = self.rotation_evidence(energy, valid)
         if self.magnitude_aware:
             if self.scale_separated:
@@ -106,7 +112,7 @@ class FlyRotV0(nn.Module):
             )
         else:
             confidence = gate * torch.sigmoid(-log_variance.mean(dim=-1, keepdim=True))
-        return {
+        output = {
             "rotation_vector": accumulated,
             "log_variance": log_variance,
             "confidence": confidence,
@@ -114,3 +120,15 @@ class FlyRotV0(nn.Module):
             "direction_energy": energy,
             "valid_mask": valid,
         }
+        if diagnostics:
+            diagnostic_result = build_rotation_residual_diagnostics(
+                accumulated,
+                energy,
+                valid,
+                on_energy=on_energy,
+                off_energy=off_energy,
+                focal_y_over_x=self.rotation_evidence.focal_y_over_x,
+            )
+            output.update(diagnostic_result.as_dict())
+            output["old_confidence"] = confidence
+        return output
