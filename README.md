@@ -1,4 +1,6 @@
-# FlyRot-v0
+# FlyRot v0.3.0
+
+[![CI](https://github.com/ekare/drosphila/actions/workflows/ci.yml/badge.svg)](https://github.com/ekare/drosphila/actions/workflows/ci.yml)
 
 FlyRot-v0 is a small research prototype for estimating relative camera
 rotation from RGB video. Its architecture is inspired by motion vision in
@@ -12,14 +14,17 @@ The project does not use depth, IMU, optical flow, or semantic labels as model
 inputs. Pose is used only as a training/evaluation target. The current model
 uses 128x128 RGB crops, three frames per window, and a four-frame sampling gap.
 
-The accepted checkpoint is included at `models/flyrot_v0_best.pt`. It is a
-small state-dict-only PyTorch checkpoint. Detailed evaluation is in
+The v0.2.0 checkpoint is included at `models/flyrot_v0_best.pt`. It is a
+small state-dict-only PyTorch checkpoint. v0.3.0 adds a validity-aware
+geometry diagnostic, oracle evaluator, full-intrinsics API, and CI. Detailed
+legacy evaluation is in
 [`reports/evaluation_metrics.md`](reports/evaluation_metrics.md).
 
-Current research status: the checkpoint beats the zero-rotation baseline on
-trajectory-disjoint validation and aggregate held-out test evaluation. It is
-not yet a general-purpose visual odometry system: translation-induced
-parallax and calibrated uncertainty remain open limitations.
+Current research status: the checkpoint remains a small rotation-only baseline.
+The v0.3 diagnostic reports a directional residual near `0.68` on balanced
+real-data validation/test samples, so native evidence is not yet a calibrated
+correctness signal. Translation-induced parallax and calibrated uncertainty
+remain open limitations.
 
 ## Installation
 
@@ -90,6 +95,23 @@ python scripts/evaluate_metrics.py \
   --index artifacts/tartanair2_index.json \
   --split validation
 ```
+
+For the v0.3 directional/oracle report, use a locally generated index:
+
+```bash
+python scripts/evaluate_directional_residual.py \
+  --checkpoint models/flyrot_v0_best.pt \
+  --index artifacts/tartanair_index.json \
+  --split validation \
+  --samples 512 \
+  --output artifacts/directional_validation.json
+```
+
+The primary metric is `directional_residual_ratio`: the fraction of native
+direction evidence not compatible with the supplied rotation. The deprecated
+`residual_ratio` name remains an equal alias for v0.2 consumers. Optional
+temporal, scale, and ON/OFF scores carry explicit validity fields; unavailable
+values are serialized as JSON `null`, not as zero evidence.
 
 ## Train
 

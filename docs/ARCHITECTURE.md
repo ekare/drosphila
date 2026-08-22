@@ -1,4 +1,4 @@
-# FlyRot-v0 architecture
+# FlyRot v0.3.0 architecture
 
 FlyRot-v0 is intentionally small. It is a biologically inspired motion
 front-end followed by a geometry-aware evidence readout.
@@ -17,8 +17,8 @@ adaptive luminance photoreceptor
 at spatial scales (4, 8, 16)
               |
               v
-rotational-flow basis projection
-using normalized camera coordinates
+camera-intrinsics-aware rotational evidence
+using exact perspective geometry for diagnostics
               |
               v
 causal leaky evidence accumulator
@@ -28,6 +28,7 @@ linear SO(3) rotation readout
               |
               +--> relative rotation vector
               +--> magnitude-based confidence proxy
+              +--> validity-aware directional diagnostics
 ```
 
 ## Photoreceptor stage
@@ -46,10 +47,16 @@ wrapping pixels around the image.
 ## Geometry stage
 
 Local directional energy is projected onto the three basis fields produced by
-camera rotation. Image coordinates are normalized using the camera intrinsics
-convention supplied by the model configuration. This provides a shared
-geometric explanation for local motion rather than treating each pixel as an
-independent classifier.
+camera rotation. The diagnostic API accepts full pinhole intrinsics `(fx, fy,
+cx, cy, width, height)` and also preserves the centered legacy focal-ratio
+form. Exact perspective rotation geometry is used for residual comparison; a
+finite-difference rotational basis supplies observability and least-squares
+evidence.
+
+The primary residual is `directional_residual_ratio`: unexplained native
+direction evidence divided by observed native energy. It is deliberately not
+called a physical displacement ratio. `residual_ratio` is retained only as a
+deprecated compatibility alias.
 
 ## Temporal state
 
@@ -64,6 +71,7 @@ estimate translation, depth, object identity, or a persistent world map. A
 translating camera can produce image motion that resembles rotation when scene
 depth is unknown; this is the main current research limitation.
 
-The confidence proxy is derived from predicted rotation magnitude and fixed
-training-distribution constants. It is deliberately documented as an
-abstention heuristic, not as calibrated uncertainty.
+Temporal, scale, ON/OFF, observability, and global-reliability fields expose
+their own validity masks. An unavailable optional score is not converted to
+zero. Global reliability is a validity-aware aggregation and is deliberately
+documented as an abstention heuristic, not calibrated uncertainty.

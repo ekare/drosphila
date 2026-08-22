@@ -25,6 +25,8 @@ from flyrot.geometry.rotational_flow import CameraIntrinsics  # noqa: E402
 
 
 def _json_value(value: Any) -> Any:
+    if isinstance(value, Path):
+        return str(value)
     if isinstance(value, torch.Tensor):
         return _json_value(value.detach().cpu().tolist())
     if isinstance(value, np.ndarray):

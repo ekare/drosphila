@@ -108,7 +108,7 @@ def run(args: argparse.Namespace) -> dict:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--index", type=Path, required=True)
-    parser.add_argument("--output-root", type=Path, default=Path("artifacts/v030_experiments_kiousb"))
+    parser.add_argument("--output-root", type=Path, default=Path("artifacts/v030_experiments"))
     parser.add_argument("--steps", type=int, default=300)
     parser.add_argument("--eval-interval", type=int, default=100)
     parser.add_argument("--max-train-samples", type=int, default=1024)

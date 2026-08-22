@@ -129,18 +129,34 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
                                             "evidence_valid": bool(evidence["evidence_valid"][0, 0, scale_index]),
                                         }
                                     )
+    summary_by_scale = {}
+    for scale_index in range(3):
+        scale_rows = [row for row in rows if row["scale_index"] == scale_index]
+        evidence = np.asarray([row["evidence_norm"] for row in scale_rows], dtype=np.float64)
+        normalized = np.asarray([row["normalized_displacement"] for row in scale_rows], dtype=np.float64)
+        pixels = np.asarray([row["pixel_displacement"] for row in scale_rows], dtype=np.float64)
+        summary_by_scale[str(scale_index)] = {
+            "rows": len(scale_rows),
+            "evidence_norm_min": float(evidence.min()),
+            "evidence_norm_max": float(evidence.max()),
+            "mean_direction_accuracy": float(np.mean([row["direction_accuracy"] for row in scale_rows])),
+            "spearman_evidence_vs_normalized_displacement": float(np.corrcoef(np.argsort(np.argsort(evidence)), np.argsort(np.argsort(normalized)))[0, 1]),
+            "spearman_evidence_vs_pixel_displacement": float(np.corrcoef(np.argsort(np.argsort(evidence)), np.argsort(np.argsort(pixels)))[0, 1]),
+        }
     report = {
         "experiment": "direction-scale-response-v0.3.0",
         "image_size": args.image_size,
-        "rows": rows,
+        "row_count": len(rows),
+        "summary_by_scale": summary_by_scale,
         "interpretation": "Direction-cell evidence is directional; response magnitude was not calibrated as physical displacement.",
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(_json_value(report), indent=2) + "\n", encoding="utf-8")
     artifact_path = args.artifact_dir / "scale_calibration_rows.json"
     artifact_path.parent.mkdir(parents=True, exist_ok=True)
-    artifact_path.write_text(json.dumps(_json_value(report), indent=2) + "\n", encoding="utf-8")
-    return report
+    full_report = {**report, "rows": rows}
+    artifact_path.write_text(json.dumps(_json_value(full_report), indent=2) + "\n", encoding="utf-8")
+    return {"summary": report, "rows": rows}
 
 
 def main() -> None:

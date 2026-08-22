@@ -1,0 +1,32 @@
+{
+  "experiment": "direction-scale-response-v0.3.0",
+  "image_size": 64,
+  "row_count": 3456,
+  "summary_by_scale": {
+    "0": {
+      "rows": 1152,
+      "evidence_norm_min": 0.40309402346611023,
+      "evidence_norm_max": 3.0442137718200684,
+      "mean_direction_accuracy": 0.7012935960665345,
+      "spearman_evidence_vs_normalized_displacement": -0.23105986467013737,
+      "spearman_evidence_vs_pixel_displacement": -0.21710464761715303
+    },
+    "1": {
+      "rows": 1152,
+      "evidence_norm_min": 0.40309402346611023,
+      "evidence_norm_max": 3.0442137718200684,
+      "mean_direction_accuracy": 0.7012935960665345,
+      "spearman_evidence_vs_normalized_displacement": -0.23105986467013737,
+      "spearman_evidence_vs_pixel_displacement": -0.21710464761715303
+    },
+    "2": {
+      "rows": 1152,
+      "evidence_norm_min": 0.40309402346611023,
+      "evidence_norm_max": 3.0442137718200684,
+      "mean_direction_accuracy": 0.7012935960665345,
+      "spearman_evidence_vs_normalized_displacement": -0.23105986467013737,
+      "spearman_evidence_vs_pixel_displacement": -0.21710464761715303
+    }
+  },
+  "interpretation": "Direction-cell evidence is directional; response magnitude was not calibrated as physical displacement."
+}
