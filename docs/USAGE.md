@@ -6,8 +6,8 @@ so it can be copied to another machine without exposing local infrastructure.
 ## 1. Install
 
 ```bash
-git clone https://github.com/OWNER/REPOSITORY.git
-cd REPOSITORY
+git clone https://github.com/ekare/drosphila.git
+cd drosphila
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install -U pip
@@ -147,13 +147,26 @@ python scripts/rotation_residual.py \
   --preload-images
 ```
 
-The output contains native ON/OFF energy, observed/explained/residual energy,
-three scale residuals, normalized spatial support, scale/temporal/ON/OFF
-agreement, observability eigenvalues, and energy accounting. A matching
-rotation should leave a small oracle residual; brightness, translation, and a
-localized moving patch should remain residual rather than being explained as
-camera rotation. The current release checkpoint's real-data results are an
-honest diagnostic baseline, not calibrated uncertainty.
+The output contains native ON/OFF energy, rotation-direction-compatible and
+directional-residual evidence, three scale evidence vectors, spatial support,
+validity-aware scale/temporal/ON/OFF agreement, observability eigenvalues and
+axis information, and energy accounting. A matching rotation should leave a
+small oracle residual; brightness, translation, and a localized moving patch
+should remain residual rather than being explained as camera rotation. The
+current checkpoint's real-data results are an honest diagnostic baseline, not
+calibrated uncertainty.
+
+For the reproducible v0.3 report, the trajectory-balanced evaluator computes
+`RR_pred`, `RR_gt`, `RR_zero`, `RR_wrong`, and `delta` on at least 512 samples
+per split. `RR_gt` is the final-state oracle using the ground-truth endpoint
+rotation; it is not a fabricated per-step label. Keep the test split for final
+reporting, never for selecting a model.
+
+Full intrinsics can be supplied to the evaluator as a JSON mapping containing
+`fx`, `fy`, `cx`, `cy`, `width`, and `height`; without that file the evaluator
+uses the documented centered legacy convention. Crop and resize operations
+must update the principal point and focal lengths through
+`CameraIntrinsics.cropped()` and `.resized()`.
 
 Shortcut checks use the same model path:
 

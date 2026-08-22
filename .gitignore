@@ -4,16 +4,21 @@ __pycache__/
 *.egg-info/
 *.py[cod]
 .pytest_cache/
+/dist/
+/build/
 
 configs/local.yaml
 artifacts/
 runs/
 checkpoints/
-data/
+/data/
 reports/machine_inventory.md
 reports/evaluation_metrics_20260823.md
 reports/*
 !reports/evaluation_metrics.md
+!reports/rotation_residual_v0.3.0.md
+!reports/model_selection_v0.3.0.md
+!reports/scale_calibration_v0.3.0.json
 *.pt
 *.pth
 *.ckpt

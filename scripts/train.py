@@ -212,6 +212,8 @@ def main() -> None:
     device = torch.device(requested_device)
     model = build_model(args.model).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
+    if device.type == "cuda":
+        torch.cuda.reset_peak_memory_stats(device)
     start_step = 0
     best_val = float("inf")
     if args.resume:
@@ -276,6 +278,11 @@ def main() -> None:
                 "device": torch.cuda.get_device_name(device) if device.type == "cuda" else str(device),
                 "torch": torch.__version__,
                 "cuda_runtime": torch.version.cuda,
+                "peak_vram_mb": (
+                    float(torch.cuda.max_memory_allocated(device) / (1024 * 1024))
+                    if device.type == "cuda"
+                    else None
+                ),
             }
             with event_path.open("a", encoding="utf-8") as handle:
                 handle.write(json.dumps(latest_metrics) + "\n")

@@ -2,7 +2,80 @@
 
 from __future__ import annotations
 
+from dataclasses import dataclass
+
 import torch
+
+
+@dataclass(frozen=True)
+class CameraIntrinsics:
+    """Pinhole intrinsics in pixel coordinates for one image raster."""
+
+    fx: float
+    fy: float
+    cx: float
+    cy: float
+    width: int
+    height: int
+
+    def __post_init__(self) -> None:
+        if self.fx <= 0 or self.fy <= 0 or self.width < 1 or self.height < 1:
+            raise ValueError("focal lengths and image dimensions must be positive")
+
+    @classmethod
+    def centered(cls, width: int, height: int, focal_y_over_x: float = 1.0) -> "CameraIntrinsics":
+        if focal_y_over_x <= 0:
+            raise ValueError("focal_y_over_x must be positive")
+        return cls(
+            fx=width / 2.0,
+            fy=(height / 2.0) * focal_y_over_x,
+            cx=(width - 1) / 2.0,
+            cy=(height - 1) / 2.0,
+            width=int(width),
+            height=int(height),
+        )
+
+    @classmethod
+    def from_mapping(cls, mapping: dict[str, float | int]) -> "CameraIntrinsics":
+        return cls(
+            fx=float(mapping["fx"]),
+            fy=float(mapping["fy"]),
+            cx=float(mapping["cx"]),
+            cy=float(mapping["cy"]),
+            width=int(mapping["width"]),
+            height=int(mapping["height"]),
+        )
+
+    def as_dict(self) -> dict[str, float | int]:
+        return {
+            "fx": self.fx,
+            "fy": self.fy,
+            "cx": self.cx,
+            "cy": self.cy,
+            "width": self.width,
+            "height": self.height,
+        }
+
+    def resized(self, width: int, height: int) -> "CameraIntrinsics":
+        sx, sy = width / self.width, height / self.height
+        return CameraIntrinsics(
+            fx=self.fx * sx,
+            fy=self.fy * sy,
+            cx=(self.cx + 0.5) * sx - 0.5,
+            cy=(self.cy + 0.5) * sy - 0.5,
+            width=int(width),
+            height=int(height),
+        )
+
+    def cropped(self, left: int, top: int, width: int, height: int) -> "CameraIntrinsics":
+        return CameraIntrinsics(
+            fx=self.fx,
+            fy=self.fy,
+            cx=self.cx - left,
+            cy=self.cy - top,
+            width=int(width),
+            height=int(height),
+        )
 
 
 def _hat(vector: torch.Tensor) -> torch.Tensor:
@@ -14,6 +87,20 @@ def _hat(vector: torch.Tensor) -> torch.Tensor:
     result[..., 2, 0] = -vector[..., 1]
     result[..., 2, 1] = vector[..., 0]
     return result
+
+
+def normalized_camera_grid(
+    intrinsics: CameraIntrinsics,
+    *,
+    device: torch.device,
+    dtype: torch.dtype,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """Return normalized pinhole ray coordinates ``x,y`` for a raster."""
+
+    u = torch.arange(intrinsics.width, device=device, dtype=dtype)
+    v = torch.arange(intrinsics.height, device=device, dtype=dtype)
+    vv, uu = torch.meshgrid(v, u, indexing="ij")
+    return (uu - intrinsics.cx) / intrinsics.fx, (vv - intrinsics.cy) / intrinsics.fy
 
 
 def rotational_flow_basis(x: torch.Tensor, y: torch.Tensor) -> torch.Tensor:

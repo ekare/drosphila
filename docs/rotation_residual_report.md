@@ -1,6 +1,6 @@
-# Rotation-residual retina report
+# v0.3.0 rotation-residual retina report
 
-Status: implemented and tested as a diagnostic branch. The included model
+Status: implemented, tested, and packaged. The included v0.2.0 model
 checkpoint is not being presented as a calibrated uncertainty model or as a
 translation-robust visual-odometry system.
 
@@ -22,13 +22,13 @@ p' = project(K exp([r]x) K^-1 p)
 flow_rotation = p' - p
 ```
 
-The implementation uses centered normalized coordinates and the configured
-`focal_y_over_x` ratio. It is an image displacement in normalized coordinates,
-not pixels per second.
+The implementation accepts full `(fx, fy, cx, cy, width, height)` intrinsics
+and preserves the centered normalized legacy focal-ratio form. It is an image
+displacement in normalized coordinates, not pixels per second.
 
-The residual remains in energy space. For each direction `d`, with `u_d` the
-unit direction-cell vector and `u_R` the predicted rotational-flow direction,
-the explained amount is:
+The residual remains in native evidence space. For each direction `d`, with
+`u_d` the unit direction-cell vector and `u_R` the predicted rotational-flow
+direction, the explained amount is:
 
 ```text
 E_explained(d,p) = E_observed(d,p) * max(0, dot(u_d, u_R(p)))
@@ -52,8 +52,10 @@ projection.
 
 ## Verification evidence
 
-The clean-code test suite currently reports `29 passed, 2 skipped`, and source
-and scripts compile successfully. The geometry tests verify the exact
+The clean-code test suite currently reports `37 passed, 2 skipped` in the
+working environment; a clean source checkout reports the expected dataset
+skips as well. Source and scripts compile successfully. The geometry tests
+verify the exact
 perspective implementation against the finite-difference first-order basis,
 including sign and zero-rotation cases. The model test verifies that
 `diagnostics=False` preserves the normal output and that the diagnostic branch
@@ -75,22 +77,20 @@ For the pure-rotation oracle, negating the rotation gives residual ratio
 are generated below the ignored `artifacts/` directory by
 `rotation_residual.py`.
 
-The release checkpoint was also run on six sampled windows from each of the
-validation and held-out test splits. These are diagnostic samples, not a full
-dataset claim:
+The release checkpoint was run with the trajectory-balanced v0.3 evaluator on
+512 windows from each split:
 
 | split | samples | mean geodesic | p90 geodesic | residual ratio | spatial support | scale agreement | temporal | ON/OFF | new global |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| validation | 6 | 11.34 deg | 17.42 deg | 0.675 | 0.951 | 0.692 | 0.000 | 0.000 | 0.000 |
-| test | 6 | 19.93 deg | 36.35 deg | 0.679 | 0.953 | 0.685 | 0.000 | 0.000 | 0.000 |
+| validation | 512 | 12.21 deg | 20.73 deg | 0.67995 | 0.951 | valid | 0.000 | valid | valid |
+| test | 512 | 13.02 deg | 23.19 deg | 0.67990 | 0.953 | valid | 0.000 | valid | valid |
 
-The three representative panels for each split are selected as best, median,
-and worst by SO(3) geodesic error. The high residual and zero temporal/ON/OFF
-agreement are reported rather than hidden: the existing checkpoint's old
-magnitude confidence can be close to one while the native motion evidence is
-not jointly consistent with the predicted rotation. The new global field is
-therefore a conservative, explicitly uncalibrated diagnostic, not a claim of
-accuracy.
+The high residual is reported rather than hidden: the existing checkpoint's
+old magnitude confidence can be close to one while the native motion evidence
+is not jointly consistent with the predicted rotation. Temporal agreement is
+unavailable for a three-frame window because there are not two post-warmup
+motion comparisons; it is not a numeric zero. The new global field is a
+validity-aware, explicitly uncalibrated diagnostic, not a claim of accuracy.
 
 ## Shortcut experiments
 
@@ -104,8 +104,8 @@ These are useful invariance/sensitivity checks, not training guarantees.
 
 ## Known limitations and next experiments
 
-- The current real checkpoint has a large residual (`about 0.68`) and zero
-  temporal/ON/OFF agreement in the sampled reports. That is evidence for a
+- The current real checkpoint has a large residual (`about 0.68`) while the
+  endpoint-ground-truth oracle is nearly identical. That is evidence for a
   model/data or polarity-alignment issue, not evidence that the residual has
   been solved by the old confidence head.
 - `global_confidence` and `axis_confidence` are diagnostic scores with no
@@ -113,9 +113,9 @@ These are useful invariance/sensitivity checks, not training guarantees.
 - A translation or independently moving object can produce structured
   residual energy. The diagnostic exposes it; it does not yet learn a robust
   depth/parallax separation model.
-- The current observability basis assumes the normalized centered camera grid
-  and the configured focal ratio. A camera with a materially different
-  principal point or calibration needs an explicit intrinsics extension.
+- Full intrinsics are supported by the diagnostic API. Real-data claims still
+  require a verified calibration file; without one, results use the centered
+  legacy convention.
 - The next scientific step is to train or adapt the model with the ON/OFF and
   temporal consistency contracts visible in this report, then rerun the full
   trajectory-disjoint validation and held-out test reports. Until that is
