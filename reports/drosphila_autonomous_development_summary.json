@@ -1,0 +1,85 @@
+{
+  "schema": "drosphila.autonomous-development.v1",
+  "repo": {
+    "name": "ekare/drosphila",
+    "base_release": "v0.3.0",
+    "base_commit": "ac177dceae2c53b3de88bf13cc66f858828a7f07",
+    "working_branch": "codex/v0.4.0-visual-motion-foundation",
+    "report_basis_commit": "5d86533"
+  },
+  "releases": {
+    "v0.3.0": {"status": "published_and_preserved"},
+    "v0.4.0": {"status": "not_released_quality_gates_incomplete"}
+  },
+  "geometry_gate": {
+    "synthetic_homography": "pass",
+    "pose_image_convention": "pass",
+    "intrinsics_status": "assumed_tartan_air_v2_centered_calibration",
+    "real_directional_oracle": "unresolved"
+  },
+  "baseline": {
+    "model": "flyrot_motion_direct",
+    "parameters": 39,
+    "validation": {"samples": 1697, "model_mse": 0.019348084926605225, "zero_mse": 0.01937073841691017, "mean_geodesic_deg": 12.236946105957031},
+    "test": {"samples": 28496, "model_mse": 0.021247463300824165, "zero_mse": 0.021325549110770226, "mean_geodesic_deg": 12.635311126708984}
+  },
+  "flyrot_v1": {
+    "status": "experimental_not_accepted",
+    "parameters": 829,
+    "validation_mse": 0.019312087446451187,
+    "test_mse": 0.02126929722726345,
+    "test_mean_geodesic_deg": 12.645468711853027,
+    "rejection_reason": "held_out_test_slightly_worse_and_oracle_unresolved"
+  },
+  "orientation_memory": {"status": "implemented_experimental_only", "so3_composition_test": "pass"},
+  "translation": {"status": "oracle_geometry_only", "learned_predictor": "missing", "metric_scale": "not_claimed"},
+  "scene_memory": {"status": "not_started"},
+  "runtime": {
+    "final_inference_gpu": "NVIDIA GeForce GTX 1050 Ti",
+    "cuda_ordinal": 0,
+    "batch1_ms_per_sample": 19.09728916012682,
+    "batch32_ms_per_sample": 2.437558016863477,
+    "full_validation_on_1050": "pass",
+    "full_test_on_1050": "pass"
+  },
+  "tests": {"passed": 47, "skipped": 2, "compile": "pass", "wheel": "pass", "synthetic_smoke": "pass"},
+  "ci": {"python_versions": ["3.11", "3.12"], "workflow": "present", "pr_status": "pass"},
+  "commits": ["a722677", "de76a5e", "c017d20", "ef06066", "e19d60b", "366f32d", "5d86533"],
+  "pull_requests": [{"number": 2, "status": "open", "url": "https://github.com/ekare/drosphila/pull/2"}],
+  "failed_experiments": [
+    {"name": "flyrot_v1_real_generalization", "result": "held_out_test_not_better_than_v0.3"},
+    {"name": "real_directional_oracle", "result": "wrong_sign_not_discriminative"}
+  ],
+  "unresolved_claims": [
+    "calibrated visual-motion correctness",
+    "translation under parallax",
+    "metric scale",
+    "world-relative motion",
+    "scene memory and loop closure",
+    "verified exact camera calibration manifest"
+  ],
+  "verified_capabilities": [
+    "portable provenance manifest",
+    "path-free dataset manifest hashing",
+    "pose and image-motion convention",
+    "exact homography geometry",
+    "crop-resize intrinsics propagation",
+    "axis-aware evaluation and macro bootstrap",
+    "v0.3 rotation baseline inference on GTX 1050 Ti",
+    "depth-conditioned rigid-flow oracle"
+  ],
+  "experimental_capabilities": [
+    "FlyRot-v1 separate ON/OFF paths",
+    "retinotopic field",
+    "ordered SO3 orientation memory"
+  ],
+  "missing_capabilities": [
+    "accepted FlyRot-v1 checkpoint",
+    "learned translation",
+    "metric scale",
+    "scene descriptor and map",
+    "loop closure",
+    "verified depth-backed train/validation scope"
+  ],
+  "next_blocker": "depth_verified_translation_and_scene_memory_contract"
+}

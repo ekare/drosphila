@@ -15,6 +15,7 @@ from torch.utils.data import DataLoader, Subset
 from flyrot.data.tartanair import TartanAirWindowDataset, default_split
 from flyrot.losses import flyrot_loss
 from flyrot.models.flyrot_v0 import FlyRotV0
+from flyrot.models.flyrot_v1 import FlyRotV1
 from flyrot.models.tiny_conv_baseline import TinyConvBaseline
 
 
@@ -51,6 +52,8 @@ def build_model(model_name: str) -> torch.nn.Module:
         return FlyRotV0(confidence_gated=True, readout_scale=8.0, focal_y_over_x=4.0 / 3.0)
     if model_name == "tiny_conv_32":
         return TinyConvBaseline(channels=32)
+    if model_name == "flyrot_v1":
+        return FlyRotV1()
     raise ValueError(f"unknown model: {model_name}")
 
 
@@ -162,6 +165,7 @@ def main() -> None:
             "flyrot_motion_uncertainty",
             "flyrot_stretched_gated",
             "tiny_conv_32",
+            "flyrot_v1",
         ),
         default="flyrot",
     )
@@ -252,7 +256,7 @@ def main() -> None:
         if args.step_loss_weight:
             step_target = batch["target_rotation_vectors"].to(device)
             step_components = flyrot_loss(
-                output["rotation_vector"].reshape(-1, 3),
+                output.get("step_rotation_vector", output["rotation_vector"]).reshape(-1, 3),
                 step_target.reshape(-1, 3),
                 output["log_variance"].reshape(-1, 3),
                 geodesic_weight=args.geodesic_weight,

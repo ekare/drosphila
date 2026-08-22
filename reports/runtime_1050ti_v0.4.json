@@ -1,0 +1,27 @@
+{
+  "schema": "flyrot.runtime-acceptance.v1",
+  "status": "pass_release_baseline_inference",
+  "gpu_ordinal": 0,
+  "gpu_name": "NVIDIA GeForce GTX 1050 Ti",
+  "checkpoint": "models/flyrot_v0_best.pt",
+  "torch": "2.5.1+cu121",
+  "benchmark": {
+    "batch_1": {"steps": 50, "image_size": 128, "sample_latency_ms": 19.09728916012682, "peak_cuda_memory_mib": 28.57421875},
+    "batch_32": {"steps": 50, "image_size": 128, "sample_latency_ms": 2.437558016863477, "peak_cuda_memory_mib": 469.9609375}
+  },
+  "full_validation": {
+    "samples": 1697,
+    "model_mse": 0.019348081201314926,
+    "zero_mse": 0.01937073841691017,
+    "mean_geodesic_deg": 12.236946105957031
+  },
+  "full_test": {
+    "samples": 28496,
+    "model_mse": 0.021247463300824165,
+    "zero_mse": 0.021325549110770226,
+    "mean_geodesic_deg": 12.635311126708984
+  },
+  "candidate_v1": "not_accepted",
+  "translation": "oracle_only",
+  "scene_memory": "not_started"
+}

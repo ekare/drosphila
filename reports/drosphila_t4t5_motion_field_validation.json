@@ -1,0 +1,59 @@
+{
+  "release": {
+    "v0_3_1": {"status": "released", "commit": "970400abafa1273ea1674f73223a5a6e3c055d5b", "tag": "v0.3.1", "pr": 3},
+    "v0_4_0": {"status": "not_released", "reason": "C0 and F0 failed; no accepted V1 winner"}
+  },
+  "cell_gate": {
+    "status": "failed",
+    "t4_on": {"direction_sign_accuracy": 0.1078125, "median_preferred_null_ratio": 2.5532577306308473, "median_dsi": 0.4371361899772154},
+    "t5_off": {"direction_sign_accuracy": 0.1078125, "median_preferred_null_ratio": 2.5532577306308473, "median_dsi": 0.4371361899772154},
+    "direction_selectivity": {"small_motion_candidate_median_dsi": 0.6197814863711808},
+    "speed_tuning": {"current_scales": [4, 8, 16], "small_motion_candidate": [1, 2, 4, 8]},
+    "polarity_crosstalk": {"current": 1.0585265022609267, "small_motion_candidate": 1.1447959581037401},
+    "flicker_false_positive": 0.0
+  },
+  "motion_field_gate": {
+    "status": "failed",
+    "median_angular_error_deg": {"T3": 89.13827856655779, "T5": 89.73715718587239, "T7": 95.1984476361956},
+    "direction_accuracy": {"T3": 0.5110445104796311, "T5": 0.49788016825914383, "T7": 0.44733613977829617},
+    "magnitude_spearman": {"T3": -0.2736725481164674, "T5": -0.28116550984134053, "T7": -0.3531085241263262},
+    "epe_improvement_vs_zero": {"T3": -2.933852717280388, "T5": -2.8504446571071944, "T7": -2.732168232401212}
+  },
+  "controlled_rotation_gate": {
+    "status": "not_run",
+    "mean_geodesic_deg": null,
+    "zero_geodesic_deg": null,
+    "axis_direction_accuracy": {},
+    "wrong_sign_separation": {"exact_oracle_T3_deg": 3.8122344527425867, "exact_oracle_T5_deg": 1.9070332814690022, "exact_oracle_T7_deg": 1.272070557922755}
+  },
+  "depth_inventory": {
+    "searched_roots": ["kiousb", "tos", "tos2", "data960"],
+    "matched_trajectories": 22,
+    "usable_depth_trajectories": 0,
+    "usable_flow_trajectories": 0,
+    "depth_type": "teacher_depth candidate; unverified normalized/relative output",
+    "real_oracle_status": "unresolved"
+  },
+  "flyrot_v1": {
+    "status": "experimental_not_accepted",
+    "selected_candidate": "",
+    "parameters": 829,
+    "validation_by_seed": [{"candidate": "V1-A", "seed": 20260823, "status": "diagnostic_only", "reason": "F0 failed"}],
+    "validation_macro": {"T3_direction_accuracy": 0.5110445104796311, "T5_direction_accuracy": 0.49788016825914383, "T7_direction_accuracy": 0.44733613977829617},
+    "test": {"status": "diagnostic_only_not_used_for_selection"},
+    "acceptance_gate_passed": false
+  },
+  "runtime": {
+    "v0_3": {"parameters": 39, "GTX_1050Ti_ms": {"T3": 18.95578672507933, "T5": 19.751938049739692, "T7": 18.358000150086202}},
+    "v1_candidates": {"V1-A": {"parameters": 829, "GTX_1050Ti_ms": {"T3": 23.5405036083345, "T5": 26.01185408323848, "T7": 27.67813584165803}, "peak_memory_mib": {"T3": 34.6083984375, "T5": 59.61962890625, "T7": 85.25244140625}}},
+    "selected_model": {"status": "none"}
+  },
+  "tests": {"passed": 52, "failed": 0, "skipped": 2},
+  "commits": ["970400abafa1273ea1674f73223a5a6e3c055d5b", "930c0c18fb56c3aa17edb56b34e123c26a89e37b"],
+  "pull_requests": [{"number": 2, "state": "open", "reason": "mixed experimental scope release gate"}, {"number": 3, "state": "merged", "commit": "970400abafa1273ea1674f73223a5a6e3c055d5b"}, {"number": 4, "state": "open", "reason": "experimental validation line"}],
+  "releases": [{"tag": "v0.3.1", "status": "released", "new_learned_weights": false}],
+  "verified_capabilities": ["stable provenance manifests", "camera/crop/resize geometry contract", "exact homography tests", "validity-aware evaluator", "real-texture exact rotation generator", "analytic solver exact-flow oracle", "GTX 1050 Ti runtime and CUDA parity"],
+  "experimental_capabilities": ["FlyRot-v1", "T4/T5-inspired polarity-separated field", "real-texture learned field diagnostic"],
+  "failed_capabilities": ["C0 cell direction/polarity gate", "F0 local motion-field gate", "accepted V1 rescue", "depth-backed real oracle"],
+  "next_blocker": "cell_direction_failure; polarity_failure; local_field_failure; pose_intrinsics_unresolved"
+}
