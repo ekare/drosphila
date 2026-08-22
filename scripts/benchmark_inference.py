@@ -11,6 +11,7 @@ from pathlib import Path
 import torch
 
 from flyrot.models.flyrot_v0 import FlyRotV0
+from flyrot.models.flyrot_v1 import FlyRotV1
 
 
 def main() -> None:
@@ -25,7 +26,10 @@ def main() -> None:
     device = torch.device(args.device)
     checkpoint = torch.load(args.checkpoint, map_location=device, weights_only=False)
     model_name = checkpoint.get("config", {}).get("model", "flyrot_motion_direct")
-    model = FlyRotV0(scales=(4, 8, 16), readout_scale=1.0, magnitude_confidence=model_name == "flyrot_motion_direct").to(device)
+    if model_name == "flyrot_v1":
+        model = FlyRotV1(scales=(4, 8, 16)).to(device)
+    else:
+        model = FlyRotV0(scales=(4, 8, 16), readout_scale=1.0, magnitude_confidence=model_name == "flyrot_motion_direct").to(device)
     model.load_state_dict(checkpoint["model"])
     model.eval()
     frames = torch.rand(args.batch_size, 3, 1, args.image_size, args.image_size, device=device)

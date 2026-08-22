@@ -27,6 +27,12 @@ real-data validation/test samples, so native evidence is not yet a calibrated
 correctness signal. Translation-induced parallax and calibrated uncertainty
 remain open limitations.
 
+FlyRot-v1 is present as an experimental architecture with separated ON/OFF
+paths, a retinotopic field, and ordered SO(3) orientation memory. Its held-out
+test did not improve over the locked v0.3 baseline, so it is not the release
+model. Translation is currently an oracle geometry layer only; scene memory is
+not implemented.
+
 ## Installation
 
 Python 3.11 or newer is recommended.
