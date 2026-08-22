@@ -1,4 +1,4 @@
-# FlyRot v0.3.0
+# FlyRot v0.3.1
 
 [![CI](https://github.com/ekare/drosphila/actions/workflows/ci.yml/badge.svg)](https://github.com/ekare/drosphila/actions/workflows/ci.yml)
 
@@ -16,7 +16,8 @@ uses 128x128 RGB crops, three frames per window, and a four-frame sampling gap.
 
 The v0.2.0 checkpoint is included at `models/flyrot_v0_best.pt`. It is a
 small PyTorch checkpoint wrapper containing the model state dict and training
-metadata. v0.3.0 adds a validity-aware
+metadata. v0.3.1 adds backward-compatible provenance, camera geometry, and
+validity-aware
 geometry diagnostic, oracle evaluator, full-intrinsics API, and CI. Detailed
 legacy evaluation is in
 [`reports/evaluation_metrics.md`](reports/evaluation_metrics.md).
@@ -27,11 +28,11 @@ real-data validation/test samples, so native evidence is not yet a calibrated
 correctness signal. Translation-induced parallax and calibrated uncertainty
 remain open limitations.
 
-FlyRot-v1 is present as an experimental architecture with separated ON/OFF
-paths, a retinotopic field, and ordered SO(3) orientation memory. Its held-out
-test did not improve over the locked v0.3 baseline, so it is not the release
-model. Translation is currently an oracle geometry layer only; scene memory is
-not implemented.
+FlyRot-v1 and the T4/T5-inspired retinotopic validation tools live on the
+experimental development line. They are implemented but not accepted, are not
+the default model, and are not included as a new learned capability in the
+v0.3.1 release. See [`reports/drosphila_t4t5_motion_field_validation.md`](reports/drosphila_t4t5_motion_field_validation.md)
+for the current gates and limitations.
 
 ## Installation
 
@@ -158,10 +159,6 @@ See [`docs/USAGE.md`](docs/USAGE.md) for the longer usage guide and
 [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the model map. The
 rotation-residual diagnostic and its current evidence are described in
 [`docs/rotation_residual_report.md`](docs/rotation_residual_report.md).
-The pose/image convention, roadmap, and explicit limitations are documented
-in [`docs/POSE_IMAGE_CONVENTION.md`](docs/POSE_IMAGE_CONVENTION.md),
-[`docs/ROADMAP.md`](docs/ROADMAP.md), and
-[`docs/LIMITATIONS.md`](docs/LIMITATIONS.md).
 
 ## License and data
 
