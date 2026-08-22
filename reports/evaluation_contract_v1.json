@@ -1,0 +1,34 @@
+{
+  "schema": "flyrot.evaluation-contract.v1",
+  "checkpoint": "v0.3.0_locked",
+  "seed": 0,
+  "selection_policy": "validation_only; held_out_test_reported_after_lock",
+  "intrinsics_mode": "legacy_centered",
+  "oracle_threshold_median_wrong_minus_gt": 0.1,
+  "splits": {
+    "validation": {
+      "samples": 512,
+      "mean_geodesic_deg": 12.210516471648589,
+      "trajectory_macro_mean_deg": 12.210516471648589,
+      "trajectory_bootstrap_95ci_deg": [11.997365523129702, 12.423667420167476],
+      "environment_macro_mean_deg": 12.210516471648589,
+      "environment_bootstrap_95ci_deg": [11.997365523129702, 12.423667420167476],
+      "wrong_sign_separation_median": -0.0012772977352142334,
+      "oracle_status": "unresolved"
+    },
+    "test": {
+      "samples": 512,
+      "mean_geodesic_deg": 13.024775472702459,
+      "trajectory_macro_mean_deg": 12.984028902325981,
+      "trajectory_bootstrap_95ci_deg": [12.444991842262587, 13.457512043043021],
+      "environment_macro_mean_deg": 13.047988994750256,
+      "environment_bootstrap_95ci_deg": [12.62351316301911, 13.472464826481401],
+      "wrong_sign_separation_median": -0.0010614097118377686,
+      "oracle_status": "unresolved"
+    }
+  },
+  "validity": {
+    "temporal_agreement": "unavailable_for_terminal_state",
+    "reason_codes_are_emitted": true
+  }
+}
