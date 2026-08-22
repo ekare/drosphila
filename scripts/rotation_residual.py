@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 from pathlib import Path
 import sys
 from typing import Any
@@ -27,8 +28,8 @@ from flyrot.synthetic import SyntheticCase, make_synthetic_case
 def _json_value(value: Any) -> Any:
     if isinstance(value, torch.Tensor):
         if value.numel() == 1:
-            return float(value.detach().cpu().item())
-        return value.detach().cpu().tolist()
+            return _json_value(float(value.detach().cpu().item()))
+        return _json_value(value.detach().cpu().tolist())
     if isinstance(value, np.ndarray):
         return value.tolist()
     if isinstance(value, dict):
@@ -36,7 +37,11 @@ def _json_value(value: Any) -> Any:
     if isinstance(value, (list, tuple)):
         return [_json_value(item) for item in value]
     if isinstance(value, (np.floating, np.integer)):
-        return value.item()
+        return _json_value(value.item())
+    if isinstance(value, float) and not math.isfinite(value):
+        return None
+    if isinstance(value, int | float | str | bool) or value is None:
+        return value
     return value
 
 
@@ -78,12 +83,12 @@ def save_panel(
         ("RGB end", _image(frames, -1), "image"),
         ("ON motion energy", _map(result, "on_motion_energy"), "magma"),
         ("OFF motion energy", _map(result, "off_motion_energy"), "magma"),
-        ("Observed energy", _map(result, "observed_total_energy"), "magma"),
-        ("Observed pseudo-flow", _field_magnitude(result, "observed_pseudo_flow"), "viridis"),
+        ("Observed direction evidence", _map(result, "observed_total_energy"), "magma"),
+        ("Observed diagnostic pseudo-flow", _field_magnitude(result, "observed_pseudo_flow"), "viridis"),
         ("Predicted rotation flow", _field_magnitude(result, "predicted_rotation_flow"), "viridis"),
-        ("Explained rotation energy", _map(result, "explained_total_energy"), "magma"),
-        ("Residual energy", _map(result, "residual_total_energy"), "inferno"),
-        ("Residual pseudo-flow", _field_magnitude(result, "residual_pseudo_flow"), "plasma"),
+        ("Rotation-direction-compatible evidence", _map(result, "rotation_direction_compatible_total_energy"), "magma"),
+        ("Directional residual evidence", _map(result, "directional_residual_total_energy"), "inferno"),
+        ("Directional residual pseudo-flow", _field_magnitude(result, "residual_pseudo_flow"), "plasma"),
         ("Residual scale 1", _last(result, "residual_energy_by_scale")[0].numpy(), "inferno"),
         ("Residual scale 2", _last(result, "residual_energy_by_scale")[1].numpy(), "inferno"),
         ("Residual scale 3", _last(result, "residual_energy_by_scale")[2].numpy(), "inferno"),
@@ -102,10 +107,11 @@ def save_panel(
         text.append(f"ground truth: {ground_truth.detach().cpu().tolist()}")
     text.extend(
         [
-            f"residual ratio: {_last(result, 'residual_ratio').item():.4f}",
-            f"spatial support: {_last(result, 'spatial_support').item():.4f}",
-            f"scale agreement: {_last(result, 'scale_agreement').item():.4f}",
-            f"temporal agreement: {_last(result, 'temporal_agreement').item():.4f}",
+            f"directional residual ratio: {_last(result, 'directional_residual_ratio').item():.4f}",
+            f"directional fit: {_last(result, 'directional_fit_score').item():.4f}",
+            f"spatial support: {_last(result, 'spatial_support_score').item():.4f}",
+            f"scale agreement: {_score_text(result, 'scale_agreement_score', 'scale_agreement_valid')}",
+            f"temporal agreement: {_score_text(result, 'temporal_agreement_score', 'temporal_agreement_valid')}",
         ]
     )
     text_axis.text(0.02, 0.98, "\n".join(text), va="top", family="monospace", fontsize=9)
@@ -115,11 +121,12 @@ def save_panel(
     confidence_axis.set_title("Uncalibrated reliability")
     confidence_text = [
         f"old confidence: {_last(result, 'old_confidence').item():.4f}" if "old_confidence" in result else "old confidence: n/a",
-        f"new global: {_last(result, 'global_confidence').item():.4f}",
-        f"ON/OFF: {_last(result, 'on_off_agreement').item():.4f}",
-        f"observability: {_last(result, 'axis_confidence').tolist()}",
+        f"global reliability: {_score_text(result, 'global_reliability', 'global_reliability_valid')}",
+        f"ON/OFF: {_score_text(result, 'on_off_agreement_score', 'on_off_agreement_valid')}",
+        f"ON/OFF balance: {_last(result, 'on_off_balance_score').item():.4f}",
+        f"axis information share: {_last(result, 'axis_confidence').tolist()}",
         f"condition: {_last(result, 'observability_condition').item():.2f}",
-        f"motion presence: {_last(result, 'motion_presence').item():.4f}",
+        f"motion presence: {_last(result, 'motion_presence_score').item():.4f}",
     ]
     confidence_axis.text(0.02, 0.98, "\n".join(confidence_text), va="top", family="monospace", fontsize=9)
 
@@ -129,14 +136,26 @@ def save_panel(
     observed = _last(result, "observed_total_energy").sum().item()
     explained = _last(result, "explained_total_energy").sum().item()
     residual = _last(result, "residual_total_energy").sum().item()
-    energy_axis.bar(["observed", "explained", "residual"], [observed, explained, residual], color=["#777", "#2878b5", "#d95f02"])
+    energy_axis.bar(
+        ["observed", "direction-compatible", "directional-residual"],
+        [observed, explained, residual],
+        color=["#777", "#2878b5", "#d95f02"],
+    )
     energy_axis.tick_params(axis="x", labelrotation=25)
-    energy_axis.set_ylabel("native energy units")
+    energy_axis.set_ylabel("native direction-evidence units")
 
     fig.suptitle(title)
     output.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(output, dpi=130)
     plt.close(fig)
+
+
+def _score_text(result: dict[str, torch.Tensor], score_key: str, valid_key: str) -> str:
+    score = _last(result, score_key)
+    valid = _last(result, valid_key).bool()
+    if not bool(valid.item()) or not torch.isfinite(score).all():
+        return "N/A"
+    return f"{score.item():.4f}"
 
 
 def _model_from_checkpoint(checkpoint_path: Path, device: torch.device) -> torch.nn.Module:
@@ -180,16 +199,16 @@ def run_synthetic(args: argparse.Namespace, model: torch.nn.Module | None) -> di
         ).as_dict()
         case_metrics: dict[str, Any] = {
             "oracle": {
-                "residual_ratio": _last(oracle, "residual_ratio"),
-                "spatial_support": _last(oracle, "spatial_support"),
-                "global_confidence": _last(oracle, "global_confidence"),
+                "directional_residual_ratio": _last(oracle, "directional_residual_ratio"),
+                "spatial_support_score": _last(oracle, "spatial_support_score"),
+                "global_reliability": _last(oracle, "global_reliability"),
             }
         }
         save_panel(
             case.frames,
             oracle,
             output_root / f"{case_name}_oracle.png",
-            title=f"Synthetic {case_name}: ground-truth rotation explanation",
+            title=f"Synthetic {case_name}: ground-truth directional fit",
             ground_truth=case.pair_rotations[-1],
         )
         wrong_rotation = -case.pair_rotations.unsqueeze(0)
@@ -200,7 +219,9 @@ def run_synthetic(args: argparse.Namespace, model: torch.nn.Module | None) -> di
             on_energy=case.oracle_on_energy,
             off_energy=case.oracle_off_energy,
         )
-        case_metrics["oracle"]["wrong_rotation_residual_ratio"] = _last(wrong.as_dict(), "residual_ratio")
+        case_metrics["oracle"]["wrong_rotation_directional_residual_ratio"] = _last(
+            wrong.as_dict(), "directional_residual_ratio"
+        )
         if model is not None:
             with torch.no_grad():
                 output = model(case.frames.unsqueeze(0).to(args.device), diagnostics=True)
@@ -215,18 +236,23 @@ def run_synthetic(args: argparse.Namespace, model: torch.nn.Module | None) -> di
             case_metrics["model"] = {
                 key: _last(model_result, key)
                 for key in (
-                    "residual_ratio",
-                    "spatial_support",
-                    "scale_agreement",
-                    "temporal_agreement",
-                    "on_off_agreement",
-                    "global_confidence",
-                    "old_confidence",
-                    "observability_condition",
+                "directional_residual_ratio",
+                "spatial_support_score",
+                "scale_agreement_score",
+                "temporal_agreement_score",
+                "on_off_agreement_score",
+                "on_off_balance_score",
+                "global_reliability",
+                "global_reliability_valid",
+                "scale_agreement_valid",
+                "temporal_agreement_valid",
+                "on_off_agreement_valid",
+                "old_confidence",
+                "observability_condition",
                 )
             }
-        oracle_ratio = float(_last(oracle, "residual_ratio").mean().item())
-        oracle_support = float(_last(oracle, "spatial_support").mean().item())
+        oracle_ratio = float(_last(oracle, "directional_residual_ratio").mean().item())
+        oracle_support = float(_last(oracle, "spatial_support_score").mean().item())
         if case_name == "rotation" and oracle_ratio >= 0.25:
             failures.append(f"rotation oracle residual too high: {oracle_ratio}")
         if case_name in {"zero", "brightness", "translation", "moving_patch"} and oracle_ratio < 0.95:
