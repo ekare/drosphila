@@ -9,7 +9,8 @@ contents.
 - Inspected the existing photoreceptor, direction-cell, rotational-evidence,
   pose-convention, and first-order rotational-flow implementations.
 - Confirmed that the existing model output is causal accumulated rotation
-  evidence with shape `B,T,3`; it is not optical flow.
+  evidence with shape `B,T,3`; the direction-cell energy immediately before
+  accumulation has shape `B,T-1,3S,H,W`. Neither tensor is optical flow.
 - Added exact perspective SO(3) ray projection and a native energy-space
   residual decomposition under `flyrot.diagnostics`.
 - Added ON/OFF component exposure behind the opt-in
