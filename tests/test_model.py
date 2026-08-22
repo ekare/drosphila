@@ -1,8 +1,18 @@
 import torch
 
 from flyrot.geometry.rotational_flow import finite_difference_rotational_flow_basis, rotational_flow_basis
+from flyrot.models.direction_cells import DirectionCellBank
 from flyrot.models.flyrot_v0 import FlyRotV0
 from flyrot.models.tiny_conv_baseline import TinyConvBaseline
+
+
+def test_direction_cell_channel_contract_matches_forward_tensor():
+    bank = DirectionCellBank(scales=(4, 8, 16))
+    on = torch.rand(2, 3, 1, 16, 16)
+    energy, valid, on_energy, off_energy = bank(on, on, return_components=True)
+    assert bank.channels_per_polarity == 24
+    assert bank.channels == energy.shape[2] == valid.shape[2] == 24
+    assert bank.separate_polarity_channels == on_energy.shape[2] + off_energy.shape[2] == 48
 
 
 def test_rotational_flow_basis_matches_finite_difference():

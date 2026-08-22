@@ -1,0 +1,73 @@
+{
+  "schema": "flyrot.baseline-lock.v1",
+  "release": "v0.3.0",
+  "measurement_commit": "ac177dceae2c53b3de88bf13cc66f858828a7f07",
+  "measurement_worktree_clean": true,
+  "seed": 0,
+  "dataset": {
+    "logical_id": "tartanair-v2/lcam_front/fast-cache",
+    "record_count": 84,
+    "manifest_sha256": "e95a55ee71ed7b5d6df3efc5bb16613904456f3467c49667365feccd53c25853",
+    "modalities": ["rgb", "pose"],
+    "indexed_depth_records": 0,
+    "indexed_flow_records": 0,
+    "indexed_segmentation_records": 0,
+    "pose_format": "tx ty tz qx qy qz qw"
+  },
+  "artifacts": {
+    "config": {
+      "logical_path": "configs/flyrot_v0.yaml",
+      "sha256": "873b041b51fe1c855d8eb4337cdc0bde64bda287d744ca9751386b8bb7afbebf"
+    },
+    "checkpoint": {
+      "logical_path": "models/flyrot_v0_best.pt",
+      "sha256": "f8832b0215f02bec529ad0236bc8fb1967a09ca2102fa3f54b1a3f719c4b7c48"
+    }
+  },
+  "experiment": {
+    "model": "flyrot_motion_direct",
+    "trainable_parameters": 39,
+    "input": {"channels": 3, "height": 128, "width": 128, "window_length": 3, "frame_gap": 4},
+    "target_direction": "optical_image_motion",
+    "intrinsics_mode": "legacy_centered",
+    "intrinsics_status": "assumed_tartan_air_v2_centered_calibration"
+  },
+  "splits": {
+    "train": {"records": 13, "windows": 8536},
+    "validation": {"records": 2, "windows": 1697},
+    "test": {"records": 17, "windows": 28496}
+  },
+  "runtime": {
+    "python": "3.11",
+    "torch": "2.5.1+cu121",
+    "cuda_runtime": "12.1",
+    "gpu_names_visible": ["NVIDIA GeForce GTX 1050 Ti", "NVIDIA GeForce RTX 4060 Ti"]
+  },
+  "metrics": {
+    "validation": {
+      "samples": 1697,
+      "model_mse": 0.019348084926605225,
+      "zero_mse": 0.01937073841691017,
+      "mean_geodesic_deg": 12.236946105957031,
+      "median_geodesic_deg": 11.165284156799316,
+      "p90_geodesic_deg": 20.898405075073242,
+      "direction_accuracy": 0.5180153846740723,
+      "axis_cosine_mean": 0.03702714666724205
+    },
+    "test": {
+      "samples": 28496,
+      "model_mse": 0.021247463300824165,
+      "zero_mse": 0.021325549110770226,
+      "mean_geodesic_deg": 12.635311126708984,
+      "median_geodesic_deg": 11.197300910949707,
+      "p90_geodesic_deg": 22.376548767089844,
+      "direction_accuracy": 0.5364464521408081,
+      "axis_cosine_mean": 0.04930149018764496
+    }
+  },
+  "directional_diagnostic": {
+    "status": "unresolved_as_correctness_oracle",
+    "validation": {"rr_pred": 0.6799489128170535, "rr_gt": 0.6833969390718266, "rr_wrong": 0.6820672724861655},
+    "test": {"rr_pred": 0.6798963245237246, "rr_gt": 0.683184941066429, "rr_wrong": 0.6818659795681015}
+  }
+}

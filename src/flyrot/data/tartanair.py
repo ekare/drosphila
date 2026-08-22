@@ -12,7 +12,7 @@ import torch
 from PIL import Image
 from torch.utils.data import Dataset
 
-from flyrot.geometry.pose_conventions import load_tartanair_poses, relative_camera_rotations
+from flyrot.geometry.pose_conventions import NED_TO_OPTICAL, load_tartanair_poses, relative_camera_rotations
 from flyrot.geometry.so3 import log_so3
 
 
@@ -20,17 +20,13 @@ _FRAME_NUMBER = re.compile(r"^(\d+)")
 
 # TartanAir's camera coordinates are NED: [forward, right, down].  The
 # pinhole flow bases use [right, down, forward].
-_NED_TO_OPTICAL = np.asarray(
-    [[0.0, 1.0, 0.0], [0.0, 0.0, 1.0], [1.0, 0.0, 0.0]],
-    dtype=np.float64,
-)
-
-
 def _target_rotation_vectors(relative: np.ndarray, target_direction: str) -> np.ndarray:
+    if target_direction not in {"camera_relative", "image_motion", "optical_relative", "optical_image_motion"}:
+        raise ValueError(f"unknown target direction {target_direction!r}")
     if target_direction in {"image_motion", "optical_image_motion"}:
         relative = relative.transpose(0, 2, 1)
     if target_direction in {"optical_relative", "optical_image_motion"}:
-        relative = _NED_TO_OPTICAL @ relative @ _NED_TO_OPTICAL.T
+        relative = NED_TO_OPTICAL @ relative @ NED_TO_OPTICAL.T
     return log_so3(relative)
 
 

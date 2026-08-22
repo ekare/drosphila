@@ -5,6 +5,7 @@ from flyrot.diagnostics import (
     estimate_rotation_evidence,
     exact_rotational_flow,
 )
+from flyrot.geometry.camera import CropResizeTransform, tartanair_v2_lcam_front_intrinsics
 from flyrot.geometry.rotational_flow import CameraIntrinsics, finite_difference_rotational_flow_basis
 
 
@@ -56,6 +57,40 @@ def test_full_intrinsics_centered_legacy_equivalence_and_crop_resize():
     resized = intrinsics.resized(26, 22)
     assert resized.width == 26 and resized.height == 22
     assert torch.equal(exact_rotational_flow(torch.zeros(1, 3), intrinsics=shifted), torch.zeros(1, 2, 10, 11))
+
+
+def test_exact_homography_golden_matches_non_square_off_center_intrinsics():
+    intrinsics = CameraIntrinsics(fx=17.0, fy=13.0, cx=4.25, cy=3.75, width=11, height=9)
+    rotation = torch.tensor([[0.09, -0.05, 0.04]], dtype=torch.float64)
+    flow = exact_rotational_flow(rotation, intrinsics=intrinsics)[0]
+    u = torch.arange(intrinsics.width, dtype=torch.float64)
+    v = torch.arange(intrinsics.height, dtype=torch.float64)
+    vv, uu = torch.meshgrid(v, u, indexing="ij")
+    rays = torch.stack(
+        ((uu - intrinsics.cx) / intrinsics.fx, (vv - intrinsics.cy) / intrinsics.fy, torch.ones_like(uu)), dim=-1
+    )
+    hat = torch.zeros(3, 3, dtype=torch.float64)
+    hat[0, 1], hat[0, 2], hat[1, 0], hat[1, 2], hat[2, 0], hat[2, 1] = (
+        -rotation[0, 2], rotation[0, 1], rotation[0, 2], -rotation[0, 0], -rotation[0, 1], rotation[0, 0]
+    )
+    rotated = torch.einsum("ij,hwj->hwi", torch.matrix_exp(hat), rays)
+    projected_u = rotated[..., 0] / rotated[..., 2] * intrinsics.fx + intrinsics.cx
+    projected_v = rotated[..., 1] / rotated[..., 2] * intrinsics.fy + intrinsics.cy
+    expected = torch.stack((projected_u - uu, projected_v - vv), dim=0)
+    pixel_scale = torch.tensor([intrinsics.fx, intrinsics.fy], dtype=torch.float64).view(2, 1, 1)
+    assert torch.allclose(flow * pixel_scale, expected, atol=1e-10, rtol=1e-10)
+    wrong_sign = exact_rotational_flow(-rotation, intrinsics=intrinsics)[0]
+    assert torch.median(torch.sum(flow * expected, dim=0)) > 0
+    assert torch.median(torch.sum(wrong_sign * expected, dim=0)) < 0
+
+
+def test_crop_resize_transform_preserves_ray_geometry():
+    source = tartanair_v2_lcam_front_intrinsics()
+    transform = CropResizeTransform(left=80, top=40, crop_width=400, crop_height=320, output_width=200, output_height=160)
+    output = transform.apply(source)
+    assert output.width == 200 and output.height == 160
+    assert output.fx == 160.0 and output.fy == 160.0
+    assert output.cx == 119.75 and output.cy == 139.75
 
 
 def test_native_energy_residual_is_small_for_matching_rotation_and_large_for_wrong_rotation():

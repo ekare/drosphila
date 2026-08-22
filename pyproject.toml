@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "flyrot"
-version = "0.3.0"
+version = "0.3.1"
 description = "RGB-only relative camera rotation research inspired by fly motion vision"
 keywords = ["drosophila melanogaster", "drosophila", "melanogaster", "computer vision", "visual odometry"]
 requires-python = ">=3.11"
