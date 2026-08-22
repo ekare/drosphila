@@ -11,6 +11,11 @@ from .so3 import quaternion_to_matrix, relative_rotation
 
 TARTANAIR_POSE_FORMAT = "tx ty tz qx qy qz qw"
 FRAME_DESCRIPTION = "NED: x forward, y right, z down"
+IMAGE_FRAME_DESCRIPTION = "optical: x right, y down, z forward"
+NED_TO_OPTICAL = np.asarray(
+    [[0.0, 1.0, 0.0], [0.0, 0.0, 1.0], [1.0, 0.0, 0.0]],
+    dtype=np.float64,
+)
 
 
 def load_tartanair_poses(path: str | Path) -> np.ndarray:
@@ -50,3 +55,17 @@ def relative_camera_rotation_vectors(poses: np.ndarray) -> np.ndarray:
     from .so3 import log_so3
 
     return log_so3(relative_camera_rotations(poses))
+
+
+def target_rotation_matrices(poses: np.ndarray, target_direction: str) -> np.ndarray:
+    """Return a target rotation under one named pose/image convention."""
+
+    choices = {"camera_relative", "image_motion", "optical_relative", "optical_image_motion"}
+    if target_direction not in choices:
+        raise ValueError(f"unknown target direction {target_direction!r}")
+    relative = relative_camera_rotations(poses)
+    if target_direction in {"image_motion", "optical_image_motion"}:
+        relative = np.swapaxes(relative, -1, -2)
+    if target_direction in {"optical_relative", "optical_image_motion"}:
+        relative = NED_TO_OPTICAL @ relative @ NED_TO_OPTICAL.T
+    return relative

@@ -1,0 +1,17 @@
+schema: flyrot.camera-manifest.v1
+dataset: tartanair-v2
+camera: lcam_front
+status: assumed
+source_note: "Public TartanAir V2 convention: f=320 px and principal point (320,320) at 640x640. Verify against the exact downloaded camera manifest before calibrated evaluation."
+raster:
+  width: 640
+  height: 640
+intrinsics:
+  fx: 320.0
+  fy: 320.0
+  cx: 320.0
+  cy: 320.0
+pixel_frame: optical_right_down_forward
+pose_frame: tartanair_ned_forward_right_down
+crop_resize:
+  principal_point_rule: "crop subtracts left/top; resize maps p_out=(p_crop+0.5)*scale-0.5"

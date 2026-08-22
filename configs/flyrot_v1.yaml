@@ -1,0 +1,10 @@
+model: flyrot_v1
+scales: [4, 8, 16]
+field_size: 8
+field_gain: 0.1
+image_size: 128
+window_length: 3
+frame_gap: 4
+target_direction: optical_image_motion
+parameter_budget: 50000
+status: experimental_not_release_validated

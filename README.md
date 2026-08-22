@@ -15,7 +15,8 @@ inputs. Pose is used only as a training/evaluation target. The current model
 uses 128x128 RGB crops, three frames per window, and a four-frame sampling gap.
 
 The v0.2.0 checkpoint is included at `models/flyrot_v0_best.pt`. It is a
-small state-dict-only PyTorch checkpoint. v0.3.0 adds a validity-aware
+small PyTorch checkpoint wrapper containing the model state dict and training
+metadata. v0.3.0 adds a validity-aware
 geometry diagnostic, oracle evaluator, full-intrinsics API, and CI. Detailed
 legacy evaluation is in
 [`reports/evaluation_metrics.md`](reports/evaluation_metrics.md).
@@ -25,6 +26,12 @@ The v0.3 diagnostic reports a directional residual near `0.68` on balanced
 real-data validation/test samples, so native evidence is not yet a calibrated
 correctness signal. Translation-induced parallax and calibrated uncertainty
 remain open limitations.
+
+FlyRot-v1 is present as an experimental architecture with separated ON/OFF
+paths, a retinotopic field, and ordered SO(3) orientation memory. Its held-out
+test did not improve over the locked v0.3 baseline, so it is not the release
+model. Translation is currently an oracle geometry layer only; scene memory is
+not implemented.
 
 ## Installation
 
@@ -43,13 +50,13 @@ tests and small experiments.
 
 ## Data preparation
 
-The loader expects a TartanAir-style RGB+pose index. Raw data is never copied
-or modified by the project. Create an index on your machine:
+The loader expects a TartanAir V2-style RGB+pose index. Raw data is never
+copied or modified by the project. Create an index on your machine:
 
 ```bash
-python scripts/build_index.py \
-  --root /path/to/tartanair-v2 \
-  --output artifacts/tartanair2_index.json
+python scripts/build_index.py /path/to/tartanair-v2 \
+  --json artifacts/tartanair2_index.json \
+  --markdown artifacts/tartanair2_index.md
 ```
 
 The generated index contains local paths and is intentionally ignored by Git.
@@ -101,7 +108,7 @@ For the v0.3 directional/oracle report, use a locally generated index:
 ```bash
 python scripts/evaluate_directional_residual.py \
   --checkpoint models/flyrot_v0_best.pt \
-  --index artifacts/tartanair_index.json \
+  --index artifacts/tartanair2_index.json \
   --split validation \
   --samples 512 \
   --output artifacts/directional_validation.json
@@ -112,6 +119,11 @@ direction evidence not compatible with the supplied rotation. The deprecated
 `residual_ratio` name remains an equal alias for v0.2 consumers. Optional
 temporal, scale, and ON/OFF scores carry explicit validity fields; unavailable
 values are serialized as JSON `null`, not as zero evidence.
+
+The repository does not redistribute TartanAir data. Verify the TartanAir V2
+license, download terms, camera modality, and any local preprocessing choices
+before using an index. Portable reports record logical dataset identity and
+counts, while local indices and paths stay ignored by Git.
 
 ## Train
 
@@ -146,6 +158,10 @@ See [`docs/USAGE.md`](docs/USAGE.md) for the longer usage guide and
 [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the model map. The
 rotation-residual diagnostic and its current evidence are described in
 [`docs/rotation_residual_report.md`](docs/rotation_residual_report.md).
+The pose/image convention, roadmap, and explicit limitations are documented
+in [`docs/POSE_IMAGE_CONVENTION.md`](docs/POSE_IMAGE_CONVENTION.md),
+[`docs/ROADMAP.md`](docs/ROADMAP.md), and
+[`docs/LIMITATIONS.md`](docs/LIMITATIONS.md).
 
 ## License and data
 
