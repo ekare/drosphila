@@ -7,4 +7,4 @@ try:
 except PackageNotFoundError:
     # Source-tree fallback for an uninstalled checkout. The authoritative
     # release version remains the project metadata in pyproject.toml.
-    __version__ = "0.3.0"
+    __version__ = "0.3.1"

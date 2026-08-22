@@ -1,4 +1,4 @@
-# FlyRot v0.3.0
+# FlyRot v0.3.1
 
 [![CI](https://github.com/ekare/drosphila/actions/workflows/ci.yml/badge.svg)](https://github.com/ekare/drosphila/actions/workflows/ci.yml)
 
@@ -16,7 +16,8 @@ uses 128x128 RGB crops, three frames per window, and a four-frame sampling gap.
 
 The v0.2.0 checkpoint is included at `models/flyrot_v0_best.pt`. It is a
 small PyTorch checkpoint wrapper containing the model state dict and training
-metadata. v0.3.0 adds a validity-aware
+metadata. v0.3.1 adds backward-compatible provenance, camera geometry, and
+validity-aware
 geometry diagnostic, oracle evaluator, full-intrinsics API, and CI. Detailed
 legacy evaluation is in
 [`reports/evaluation_metrics.md`](reports/evaluation_metrics.md).
