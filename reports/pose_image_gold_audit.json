@@ -1,0 +1,31 @@
+{
+  "schema": "flyrot.pose-image-audit.v1",
+  "synthetic": {
+    "status": "pass",
+    "homography_absolute_tolerance": 1e-10,
+    "correct_sign": "positive_median_dot",
+    "wrong_sign": "negative_median_dot",
+    "cases": ["non_square_off_center", "crop_resize", "pose_transpose", "ned_to_optical"]
+  },
+  "real_sanity_check": {
+    "status": "sanity_only",
+    "records": 32,
+    "pairs_attempted": 128,
+    "pairs_with_scores": 128,
+    "gap": 4,
+    "focal_px_assumption": 320.0,
+    "wins": {"r_rel_transpose": 72, "r_rel": 56, "tie": 0},
+    "median_cosine": {"r_rel_transpose": 0.07682194519985105, "r_rel": -0.03838637300349364},
+    "interpretation": "directional sanity check only; translation, parallax, scene content, and focal assumptions remain"
+  },
+  "intrinsics_sensitivity": {
+    "legacy_128": {"fx": 64.0, "fy": 64.0, "cx": 63.5, "cy": 63.5},
+    "tartanair_assumption_resized_128": {"fx": 64.0, "fy": 64.0, "cx": 63.6, "cy": 63.6},
+    "max_pixel_abs_flow_difference": 0.0679168701171875,
+    "mean_pixel_abs_flow_difference": 0.016922445967793465
+  },
+  "depth": {
+    "fast_cache_indexed_records": 0,
+    "status": "not_in_baseline_scope"
+  }
+}
