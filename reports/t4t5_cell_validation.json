@@ -1,0 +1,29 @@
+{
+  "experiment": {
+    "name": "t4t5-inspired-cell-validation-v0.3.1",
+    "commit": "930c0c18fb56c3aa17edb56b34e123c26a89e37b",
+    "seed": 20260823,
+    "raster": [160, 128],
+    "steps": 5,
+    "checkpoint_sha256": null,
+    "claim_boundary": "T4/T5-inspired engineering validation; not biological equivalence",
+    "dataset_manifest_sha256": "1cdb79d0c2c6dbec0c940424bf329ee97a552d1e410ed1cb6b4b11325690d37b"
+  },
+  "current_scales": {
+    "scales": [4, 8, 16],
+    "t4_on": {"direction_sign_accuracy": 0.1078125, "median_preferred_null_ratio": 2.5532577306308473, "median_dsi": 0.4371361899772154},
+    "t5_off": {"direction_sign_accuracy": 0.1078125, "median_preferred_null_ratio": 2.5532577306308473, "median_dsi": 0.4371361899772154},
+    "flicker_false_positive_ratio": 0.0,
+    "stationary_false_positive_ratio": 0.0,
+    "polarity_crosstalk_median": 1.0585265022609267
+  },
+  "bounded_small_motion_correction": {
+    "scales": [1, 2, 4, 8],
+    "t4_on": {"direction_sign_accuracy": 0.121875, "median_preferred_null_ratio": 4.261345628796309, "median_dsi": 0.6197814863711808},
+    "t5_off": {"direction_sign_accuracy": 0.121875, "median_preferred_null_ratio": 4.261345628796309, "median_dsi": 0.6197814863711808},
+    "flicker_false_positive_ratio": 0.0,
+    "stationary_false_positive_ratio": 0.0,
+    "polarity_crosstalk_median": 1.1447959581037401
+  },
+  "c0": {"status": "failed", "failed_classes": ["cell_direction_failure", "polarity_failure"], "correction_rounds": 2}
+}
