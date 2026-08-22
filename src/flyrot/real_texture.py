@@ -17,6 +17,7 @@ from flyrot.data.tartanair import default_split
 from flyrot.geometry.camera import tartanair_v2_lcam_front_intrinsics
 from flyrot.geometry.so3 import exp_so3, log_so3
 from flyrot.geometry.rotational_flow import CameraIntrinsics, rotational_flow_basis
+from flyrot.validation_contract import direction_vectors, reorder_direction_vector
 
 
 ROTATION_FAMILIES = ("zero", "yaw", "pitch", "roll", "two_axis", "three_axis")
@@ -198,8 +199,8 @@ class RealTextureRotationDataset(Dataset):
         return result
 
 
-def decode_direction_population(energy: torch.Tensor, scales: tuple[int, ...], field_size: int = 8) -> dict[str, torch.Tensor]:
-    """Decode ON/OFF direction populations and a scale-weighted velocity."""
+def decode_direction_population(energy: torch.Tensor, scales: tuple[int, ...], field_size: int = 8, *, direction_order: str = "legacy") -> dict[str, torch.Tensor]:
+    """Decode ON/OFF populations with legacy compatibility or canonical audit order."""
 
     if energy.ndim != 5 or energy.shape[2] != 2 * len(scales) * 8:
         raise ValueError("expected concatenated ON/OFF energy")
@@ -207,9 +208,14 @@ def decode_direction_population(energy: torch.Tensor, scales: tuple[int, ...], f
     by = energy.reshape(batch, steps, 2, len(scales), 8, height, width)
     pooled = torch.nn.functional.adaptive_avg_pool2d(by.reshape(batch * steps * 2 * len(scales) * 8, 1, height, width), (field_size, field_size))
     pooled = pooled.reshape(batch, steps, 2, len(scales), 8, field_size, field_size)
-    angles = torch.arange(8, dtype=energy.dtype, device=energy.device) * (2 * torch.pi / 8)
-    vectors = torch.stack((angles.cos(), angles.sin()), dim=-1)
     polarity_direction = pooled.sum(dim=3)
+    if direction_order == "canonical":
+        polarity_direction = reorder_direction_vector(polarity_direction.movedim(3, -1), source="legacy").movedim(-1, 3)
+        vectors = direction_vectors(order="canonical", dtype=energy.dtype, device=energy.device)
+    elif direction_order == "legacy":
+        vectors = direction_vectors(order="legacy", dtype=energy.dtype, device=energy.device)
+    else:
+        raise ValueError(f"unknown direction_order: {direction_order!r}")
     direction_vector = torch.einsum("btqdhw,dc->btqchw", polarity_direction, vectors)
     scale_values = torch.tensor(scales, dtype=energy.dtype, device=energy.device)
     scale_strength = pooled.sum(dim=4)
@@ -217,7 +223,7 @@ def decode_direction_population(energy: torch.Tensor, scales: tuple[int, ...], f
     confidence = torch.linalg.vector_norm(direction_vector, dim=3)
     unit = direction_vector / confidence.unsqueeze(3).clamp_min(1e-8)
     velocity = unit * magnitude.unsqueeze(3)
-    return {"polarity_direction": polarity_direction, "direction_vector": direction_vector, "confidence": confidence, "magnitude": magnitude, "velocity": velocity}
+    return {"polarity_direction": polarity_direction, "direction_vector": direction_vector, "confidence": confidence, "magnitude": magnitude, "velocity": velocity, "direction_order": direction_order}
 
 
 def solve_weighted_rotation(field: torch.Tensor, weights: torch.Tensor, intrinsics: CameraIntrinsics, *, iterations: int = 3) -> dict[str, torch.Tensor]:
