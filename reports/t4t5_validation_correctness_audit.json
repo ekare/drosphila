@@ -1,0 +1,54 @@
+{
+  "historical_gate_validity": {
+    "c0": "partially_invalid",
+    "f0": "partially_invalid"
+  },
+  "direction_contract": {
+    "status": "passed",
+    "best_physical_mapping": "identity_after_explicit_legacy_to_canonical",
+    "population_vector_median_error_deg": 0.0,
+    "argmax_accuracy": 0.258929,
+    "tie_aware_accuracy": 0.553571
+  },
+  "polarity_contract": {
+    "status": "failed",
+    "on_edge_off_leakage": 0.832519,
+    "off_edge_on_leakage": 0.832519,
+    "failure_stage": "P0 local adaptation before the direction-cell bank"
+  },
+  "field_direction": {
+    "T3": {
+      "status": "failed",
+      "validation_median_angular_error_deg": 75.927003,
+      "validation_direction_sign_accuracy": 0.582349,
+      "validation_epe_improvement_vs_zero": -2.882935
+    },
+    "T5": {
+      "status": "failed",
+      "validation_median_angular_error_deg": 74.530388,
+      "validation_direction_sign_accuracy": 0.573517,
+      "validation_epe_improvement_vs_zero": -2.789939
+    },
+    "T7": {
+      "status": "failed",
+      "validation_median_angular_error_deg": 74.815463,
+      "validation_direction_sign_accuracy": 0.560786,
+      "validation_epe_improvement_vs_zero": -2.655471
+    }
+  },
+  "field_magnitude": {
+    "status": "unavailable_un_calibrated",
+    "calibration": {
+      "monotonicity_spearman": 0.464286,
+      "alias_ratio_second_to_peak": 0.918259,
+      "physical_pixel_scale": null
+    }
+  },
+  "diagnosis": [
+    "validation_contract_bug_confirmed",
+    "direction_cells_work",
+    "polarity_frontend_failed",
+    "magnitude_decoder_failed"
+  ],
+  "next_architecture_requirement": "Replace or gate the P0 polarity frontend, then retrain a polarity-aware field readout; calibrate magnitude on a calibration split before any px claim."
+}
