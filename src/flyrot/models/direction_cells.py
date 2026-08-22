@@ -41,8 +41,24 @@ class DirectionCellBank(nn.Module):
         self.direction_gain = nn.Parameter(torch.ones(2, len(DIRECTION_OFFSETS)))
 
     @property
+    def channels_per_polarity(self) -> int:
+        """Number of channels emitted by one ON or OFF polarity."""
+
+        return len(self.scales) * len(DIRECTION_OFFSETS)
+
+    @property
     def channels(self) -> int:
-        return 2 * len(self.scales) * len(DIRECTION_OFFSETS)
+        """Number of channels returned by the default, summed output."""
+
+        # ON and OFF responses are summed in the v0 forward path. Keep this
+        # property aligned with the tensor actually returned by forward().
+        return self.channels_per_polarity
+
+    @property
+    def separate_polarity_channels(self) -> int:
+        """Number of channels if ON and OFF responses are kept separately."""
+
+        return 2 * self.channels_per_polarity
 
     def forward(
         self,
