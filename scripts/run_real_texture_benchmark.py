@@ -113,7 +113,10 @@ def _evaluate_dataset(model: torch.nn.Module, dataset: RealTextureRotationDatase
             row = _metrics(velocity, target_field, target_mask)
             polarity_rows[name].append(row)
         weights = target_mask[:, :, 0] * (on_conf + off_conf)
-        solver = solve_weighted_rotation(combined_velocity, weights, tartanair_v2_lcam_front_intrinsics(640, 640).resized(8, 8))
+        solver_field = combined_velocity.clone()
+        solver_field[:, :, 0] *= 8.0 / float(target_flow.shape[-1])
+        solver_field[:, :, 1] *= 8.0 / float(target_flow.shape[-2])
+        solver = solve_weighted_rotation(solver_field, weights, tartanair_v2_lcam_front_intrinsics(640, 640).resized(8, 8))
         target_steps = item["target_step_rotation_vectors"].unsqueeze(0).to(device)
         target_endpoint = item["target_rotation_vector"].unsqueeze(0).to(device)
         endpoint_prediction = output["rotation_vector"][:, -1]

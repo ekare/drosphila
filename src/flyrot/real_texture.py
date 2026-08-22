@@ -228,9 +228,9 @@ def solve_weighted_rotation(field: torch.Tensor, weights: torch.Tensor, intrinsi
     x = (torch.arange(intrinsics.width, device=field.device, dtype=field.dtype) - intrinsics.cx) / intrinsics.fx
     y = (torch.arange(intrinsics.height, device=field.device, dtype=field.dtype) - intrinsics.cy) / intrinsics.fy
     yy, xx = torch.meshgrid(y, x, indexing="ij")
-    basis = rotational_flow_basis(xx, yy).permute(1, 2, 0, 3).clone()
-    basis[..., 0] *= intrinsics.fx
-    basis[..., 1] *= intrinsics.fy
+    basis = rotational_flow_basis(xx, yy).permute(2, 3, 1, 0).clone()
+    basis[..., 0, :] *= intrinsics.fx
+    basis[..., 1, :] *= intrinsics.fy
     b, t = field.shape[:2]
     matrix = basis.reshape(-1, 2, 3)
     observation = field.permute(0, 1, 3, 4, 2).reshape(b, t, -1, 2)
