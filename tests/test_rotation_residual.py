@@ -7,6 +7,7 @@ from flyrot.diagnostics import (
 )
 from flyrot.geometry.camera import CropResizeTransform, tartanair_v2_lcam_front_intrinsics
 from flyrot.geometry.rotational_flow import CameraIntrinsics, finite_difference_rotational_flow_basis
+from flyrot.geometry.translation_flow import rigid_camera_flow, scale_free_translation_direction
 
 
 def _normalized_grid(height: int, width: int) -> tuple[torch.Tensor, torch.Tensor]:
@@ -91,6 +92,20 @@ def test_crop_resize_transform_preserves_ray_geometry():
     assert output.width == 200 and output.height == 160
     assert output.fx == 160.0 and output.fy == 160.0
     assert output.cx == 119.75 and output.cy == 139.75
+
+
+def test_depth_rigid_flow_decomposes_rotation_and_translation():
+    intrinsics = CameraIntrinsics(fx=16.0, fy=14.0, cx=5.0, cy=4.0, width=10, height=8)
+    depth = torch.full((1, 8, 10), 4.0, dtype=torch.float64)
+    rotation = torch.tensor([[0.03, -0.02, 0.01]], dtype=torch.float64)
+    translation = torch.tensor([[0.2, -0.1, 0.05]], dtype=torch.float64)
+    result = rigid_camera_flow(rotation, translation, depth, intrinsics)
+    pure = rigid_camera_flow(rotation, torch.zeros_like(translation), depth, intrinsics)
+    assert result["valid"].all()
+    assert torch.allclose(pure["full_flow"], pure["rotation_flow"], atol=1e-10, rtol=1e-10)
+    assert torch.allclose(result["full_flow"], result["rotation_flow"] + result["translation_flow"], atol=1e-10, rtol=1e-10)
+    direction = scale_free_translation_direction(translation)
+    assert torch.allclose(torch.linalg.vector_norm(direction, dim=-1), torch.ones(1, dtype=torch.float64))
 
 
 def test_native_energy_residual_is_small_for_matching_rotation_and_large_for_wrong_rotation():
