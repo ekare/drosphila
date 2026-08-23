@@ -3,10 +3,10 @@
   "repo": {
     "path": "portable-public-repository",
     "starting_commit": "191327773fa657f6b6170a5de04e9f81930cca18",
-    "final_commit": "pending_final_quality_check",
+    "final_commit": "HEAD_at_handover; verify with git rev-parse HEAD",
     "development_branch": "codex/phone-vision-master",
     "main_commit": "970400abafa1273ea1674f73223a5a6e3c055d5b",
-    "working_tree_clean": false
+    "working_tree_clean": true
   },
   "historical_audit": {
     "c0_original": "partially_invalid",
@@ -160,10 +160,10 @@
     "cpu_cuda_parity": {"status": "passed", "max_abs": 0.0000000298, "tolerance_max_abs": 0.00002},
     "export": {"status": "not_started"}
   },
-  "tests": {"passed": 20, "failed": 0, "skipped": 0, "duration_seconds": 2.09},
+  "tests": {"passed": 70, "failed": 0, "skipped": 2, "duration_seconds": 4.24},
   "ci": {},
   "releases": [{"version": "v0.3.1", "status": "stable_existing", "commit": "970400abafa1273ea1674f73223a5a6e3c055d5b", "tag": "v0.3.1", "pr": 3, "capability": "rotation-only historical baseline"}],
-  "commits": ["6615282", "b5d1f66", "b7cf10d", "f10f9ad", "3f9b12f", "fde2ea9", "094e3f1"],
+  "commits": ["6615282", "b5d1f66", "b7cf10d", "f10f9ad", "3f9b12f", "fde2ea9", "094e3f1", "c4a7964"],
   "pull_requests": [{"number": 2, "state": "open"}, {"number": 3, "state": "merged"}, {"number": 4, "state": "open"}, {"number": 5, "state": "open"}],
   "accepted_capabilities": ["phone camera and ray-space geometry contract", "bounded deterministic P2 polarity frontend", "oracle SO3/rigid-flow/scale-free geometry"],
   "experimental_capabilities": ["P3 common-mode ablation", "orientation memory", "angular feature memory"],
