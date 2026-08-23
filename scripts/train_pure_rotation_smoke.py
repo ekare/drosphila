@@ -18,6 +18,7 @@ from flyrot.data.tartanair import default_split
 from flyrot.geometry.pose_conventions import load_tartanair_poses, relative_camera_rotations
 from flyrot.losses import flyrot_loss
 from flyrot.models.flyrot_v0 import FlyRotV0
+from flyrot.models.flyrot_v1 import FlyRotV1
 from flyrot.geometry.so3 import log_so3
 
 
@@ -155,6 +156,7 @@ def main() -> None:
         default="optical_image_motion",
     )
     parser.add_argument("--direction-scales", default="1,2")
+    parser.add_argument("--model", choices=("flyrot_v0", "flyrot_v1"), default="flyrot_v0")
     parser.add_argument("--homography-direction", choices=("camera_relative", "image_motion"), default="image_motion")
     parser.add_argument("--appearance-normalized", action="store_true")
     parser.add_argument("--scale-separated", action="store_true")
@@ -199,13 +201,16 @@ def main() -> None:
     loader = DataLoader(Subset(train_dataset, train_indices), batch_size=args.batch_size, shuffle=True, num_workers=0, pin_memory=True)
     requested_device = args.device or ("cuda:0" if torch.cuda.is_available() else "cpu")
     device = torch.device(requested_device)
-    model = FlyRotV0(
-        scales=direction_scales,
-        appearance_normalized=args.appearance_normalized,
-        scale_separated=args.scale_separated,
-        magnitude_aware=args.magnitude_aware,
-        least_squares_basis=args.least_squares_basis,
-    ).to(device)
+    if args.model == "flyrot_v1":
+        model = FlyRotV1(scales=direction_scales).to(device)
+    else:
+        model = FlyRotV0(
+            scales=direction_scales,
+            appearance_normalized=args.appearance_normalized,
+            scale_separated=args.scale_separated,
+            magnitude_aware=args.magnitude_aware,
+            least_squares_basis=args.least_squares_basis,
+        ).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
     event_path = args.run_dir / "events.jsonl"
     best_val = float("inf")

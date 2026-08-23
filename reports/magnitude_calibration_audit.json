@@ -1,0 +1,12 @@
+{
+  "requested_stimulus_displacements": [0.5, 1.0, 2.0, 4.0, 8.0, 12.0, 16.0],
+  "cell_bank_scales": [1, 2, 4, 8, 12, 16],
+  "response_peak_width_at_half_max": 6,
+  "alias_ratio_second_to_peak": 0.918259,
+  "monotonicity_spearman": 0.464286,
+  "dead_response": false,
+  "status": "unavailable_un_calibrated",
+  "calibration_split": "deterministic pure-edge calibration only; no test split used",
+  "no_physical_pixel_claim": true,
+  "interpretation": "Response strength is broad and non-monotonic; a physical displacement decoder is not justified."
+}

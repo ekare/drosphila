@@ -28,6 +28,12 @@ real-data validation/test samples, so native evidence is not yet a calibrated
 correctness signal. Translation-induced parallax and calibrated uncertainty
 remain open limitations.
 
+FlyRot-v1 and the T4/T5-inspired retinotopic validation tools live on the
+experimental development line. They are implemented but not accepted, are not
+the default model, and are not included as a new learned capability in the
+v0.3.1 release. See [`reports/drosphila_t4t5_motion_field_validation.md`](reports/drosphila_t4t5_motion_field_validation.md)
+for the current gates and limitations.
+
 ## Installation
 
 Python 3.11 or newer is recommended.

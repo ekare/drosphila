@@ -1,0 +1,42 @@
+{
+  "schema": "flyrot.polarity_frontend_selection.v1",
+  "evidence_class": "PROJECT_EVIDENCE",
+  "commit": "b5d1f66",
+  "artifact": "phone_golden_benchmark.json",
+  "rasters": [[320, 180], [256, 144], [192, 108]],
+  "candidates": {
+    "P0": {
+      "status": "failed",
+      "on_to_off_leakage": 0.4623245055,
+      "off_to_on_leakage": 0.4623245957,
+      "ideal_direction_median_error_deg": 0.046743
+    },
+    "P1": {
+      "status": "failed",
+      "on_to_off_leakage": 0.5276018276,
+      "off_to_on_leakage": 0.5276018276,
+      "ideal_direction_median_error_deg": 0.078880
+    },
+    "P2": {
+      "status": "passed",
+      "on_to_off_leakage": 0.0,
+      "off_to_on_leakage": 0.0,
+      "ideal_direction_median_error_deg": 0.0
+    },
+    "P3": {
+      "status": "passed",
+      "on_to_off_leakage": 0.0017425767,
+      "off_to_on_leakage": 0.0017425767,
+      "ideal_direction_median_error_deg": 0.000019
+    }
+  },
+  "selected_candidate": "P2",
+  "controlled_ablation": "P3",
+  "flicker_ratio": 0.0,
+  "stationary_ratio": 0.0,
+  "hypotheses": {
+    "H1": "supported_on_deterministic_golden_stimuli",
+    "H2": "not_assessed_by_frontend_gate"
+  },
+  "next_required_condition": "Run perturbed and real-texture ON/OFF validation before training or declaring a rotation capability."
+}

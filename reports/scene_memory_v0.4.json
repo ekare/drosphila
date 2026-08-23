@@ -1,0 +1,14 @@
+{
+  "schema": "flyrot.scene-memory.v1",
+  "status": "not_started",
+  "verified_capabilities": ["none"],
+  "missing_capabilities": [
+    "scene_descriptor",
+    "keyframe_store",
+    "causal_retrieval",
+    "loop_closure_evaluation",
+    "world_relative_translation",
+    "held_out_scene_split"
+  ],
+  "next_blocker": "depth_verified_translation_and_scene_dataset_contract"
+}

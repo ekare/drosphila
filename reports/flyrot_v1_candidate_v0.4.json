@@ -1,0 +1,41 @@
+{
+  "schema": "flyrot.v1-candidate.v1",
+  "status": "experimental_not_accepted",
+  "architecture": {
+    "trainable_parameters": 829,
+    "parameter_budget": 50000,
+    "separate_polarity_paths": true,
+    "retinotopic_field": {"height": 8, "width": 8, "polarities": 2},
+    "so3_step_composition": true
+  },
+  "synthetic_smoke": {
+    "steps": 200,
+    "validation_model_mse": 0.01919435504262168,
+    "validation_zero_mse": 0.0192742153054013,
+    "candidate_checkpoint_sha256": "277445c6c127a44926691e336d5027243194f47389a64549ea3c0822ce0498bf"
+  },
+  "real_selection": {
+    "seed": 0,
+    "selected_step": 200,
+    "selection_split": "validation_subset_only",
+    "candidate_checkpoint_sha256": "3d26a94a50a30a5b95bc30f9e982e045b201c88b8d5d3e8e4e2409bb49bcf81f",
+    "validation_subset_mse": 0.01920698021348244,
+    "validation_subset_zero_mse": 0.0192742153054013,
+    "validation_full_mse": 0.019312087446451187,
+    "validation_full_zero_mse": 0.01937073841691017,
+    "validation_full_geodesic_deg": 12.221795082092285,
+    "test_full_mse": 0.02126929722726345,
+    "test_full_zero_mse": 0.021325549110770226,
+    "test_full_geodesic_deg": 12.645468711853027,
+    "test_full_axis_cosine": 0.047936998307704926,
+    "confidence_std": 0.0
+  },
+  "geometry_diagnostic_validation_512": {
+    "rr_pred": 0.6807274163002148,
+    "rr_gt": 0.6832704376429319,
+    "rr_wrong": 0.682024069596082,
+    "wrong_minus_gt_median": -0.00043314695358276367,
+    "oracle_status": "unresolved"
+  },
+  "release_decision": "do_not_release"
+}

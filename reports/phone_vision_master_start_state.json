@@ -1,0 +1,47 @@
+{
+  "schema": "drosphila.phone_vision_master_start_state.v1",
+  "repo": {
+    "portable_name": "flyrot",
+    "development_branch": "codex/phone-vision-master",
+    "starting_commit": "191327773fa657f6b6170a5de04e9f81930cca18",
+    "origin_main_commit": "970400abafa1273ea1674f73223a5a6e3c055d5b",
+    "v031_tag_target": "970400abafa1273ea1674f73223a5a6e3c055d5b",
+    "working_tree_clean_at_start": true
+  },
+  "pull_requests": [
+    {"number": 2, "state": "open", "scope": "historical mixed experimental foundation"},
+    {"number": 3, "state": "merged", "scope": "v0.3.1 stable correctness and provenance"},
+    {"number": 4, "state": "open", "scope": "experimental T4/T5-inspired field and FlyRot-v1"},
+    {"number": 5, "state": "open", "scope": "T4/T5 validation correctness audit"}
+  ],
+  "releases": {
+    "stable": "v0.3.1",
+    "v0.4.0_tag_present": false,
+    "v031_contains_new_model_checkpoint": false
+  },
+  "environment": {
+    "python": "3.11",
+    "torch": "2.5.1+cu121",
+    "cuda_runtime": "12.1",
+    "gpu_classes": ["NVIDIA GeForce GTX 1050 Ti", "NVIDIA GeForce RTX 4060 Ti"],
+    "audit_device": "cuda:1",
+    "persistent_scratch_verified": true
+  },
+  "historical_audit": {
+    "c0": "partially_invalid",
+    "f0": "partially_invalid",
+    "direction_contract": "passed_after_explicit_legacy_to_canonical_conversion",
+    "polarity_contract": "failed_active_p0",
+    "field_direction_contract": "failed_corrected_v1a",
+    "magnitude_contract": "unavailable_un_calibrated",
+    "translation": "oracle_only_or_unstarted",
+    "scene_memory": "unstarted"
+  },
+  "privacy_boundary": {
+    "absolute_paths_in_public_record": false,
+    "hostnames": false,
+    "ip_addresses": false,
+    "gpu_uuids": false,
+    "secrets": false
+  }
+}

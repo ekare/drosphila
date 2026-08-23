@@ -1,0 +1,15 @@
+{
+  "schema": "flyrot.translation-oracle.v1",
+  "status": "oracle_geometry_only",
+  "synthetic": {
+    "status": "pass",
+    "cases": ["non_square_off_center_depth", "rotation_only", "translation_residual", "scale_free_direction"]
+  },
+  "baseline_scope": {
+    "dataset_logical_id": "tartanair-v2/lcam_front/fast-cache",
+    "indexed_depth_records": 0,
+    "learned_translation": "not_started",
+    "metric_scale": "not_claimed",
+    "scene_memory": "not_started"
+  }
+}

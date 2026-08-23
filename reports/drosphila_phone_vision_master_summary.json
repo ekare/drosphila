@@ -1,0 +1,174 @@
+{
+  "schema": "drosphila.phone-vision-master.v1",
+  "repo": {
+    "path": "portable-public-repository",
+    "starting_commit": "191327773fa657f6b6170a5de04e9f81930cca18",
+    "final_commit": "HEAD_at_handover; verify with git rev-parse HEAD",
+    "development_branch": "codex/phone-vision-master",
+    "main_commit": "970400abafa1273ea1674f73223a5a6e3c055d5b",
+    "working_tree_clean": true
+  },
+  "historical_audit": {
+    "c0_original": "partially_invalid",
+    "f0_original": "partially_invalid",
+    "direction_contract": "passed_after_explicit_legacy_to_canonical_conversion",
+    "polarity_contract": "active_P0_failed; P2/P3_bounded_golden_passed",
+    "field_direction_contract": "failed_corrected_phone_raster_V1A",
+    "magnitude_contract": "unavailable_un_calibrated"
+  },
+  "scientific_foundation": {
+    "reference_registry": "references/primary_sources.yaml",
+    "references_verified": 20,
+    "peer_reviewed_primary": 18,
+    "official_repositories": 5,
+    "preprints": 2,
+    "unverified_references": ["REF-MOTION-04", "REF-NAV-01"]
+  },
+  "design_decisions": {
+    "production_camera": "single_normal_perspective_phone_camera",
+    "panorama_required": false,
+    "pixel_stitching": false,
+    "motion_coordinates": "camera_ray_or_angular",
+    "orientation_state": "full_SO3",
+    "ring_attractor_role": "visual_azimuth_projection_only",
+    "translation_scale": "scale_free_until_external_scale",
+    "first_world_representation": "topological_keyframe_memory"
+  },
+  "claim_boundaries": {
+    "biological_equivalence_claimed": false,
+    "metric_scale_claimed_without_source": false,
+    "first_of_kind_claimed": false,
+    "preprint_used_as_fact": false
+  },
+  "phone_contract": {
+    "status": "accepted_geometry_only",
+    "supported_rasters": [[320, 180], [256, 144], [192, 108]],
+    "arbitrary_intrinsics": true,
+    "variable_timestamps": true,
+    "rolling_shutter_metadata": true,
+    "production_requires_panorama": false,
+    "pixel_stitching_used": false
+  },
+  "literature_mapping": {
+    "flyvis": "reference_only",
+    "lpi": "not_started",
+    "lptc": "not_started",
+    "competitive_disinhibition": "blocked",
+    "common_mode_inhibition": "hypothesis_only",
+    "heading_memory": "oracle_only_projection",
+    "place_recognition": "not_started"
+  },
+  "polarity_frontend": {
+    "status": "accepted_bounded_only",
+    "selected_candidate": "P2",
+    "on_to_off_leakage": 0.0,
+    "off_to_on_leakage": 0.0,
+    "flicker_ratio": 0.0,
+    "stationary_ratio": 0.0
+  },
+  "direction_cells": {
+    "status": "failed_learned_field_not_detector_selection",
+    "selected_layout": "canonical_direction_bank",
+    "selected_motif": "not_selected",
+    "parameters": 0,
+    "ideal_median_error_deg": 0.0,
+    "perturbed_median_error_deg": null,
+    "direction_sign_accuracy": null,
+    "median_dsi": null
+  },
+  "motion_field": {
+    "status": "failed",
+    "grid": "8x8 pooled field",
+    "direction_median_error_deg": 82.44,
+    "direction_sign_accuracy": 0.511,
+    "magnitude_status": "unavailable_un_calibrated",
+    "magnitude_spearman": null,
+    "epe_improvement_vs_zero": -4.132
+  },
+  "opponency": {
+    "lpi_status": "not_started",
+    "lptc_status": "not_started",
+    "competitive_disinhibition_status": "blocked",
+    "high_parallax_improvement": null
+  },
+  "rotation": {
+    "status": "failed",
+    "selected_model": "unchanged_V1A_not_accepted",
+    "parameters": 829,
+    "checkpoint": "external_runtime_input_not_public_artifact",
+    "checkpoint_sha256": "3d26a94a50a30a5b95bc30f9e982e045b201c88b8d5d3e8e4e2409bb49bcf81f",
+    "validation_by_seed": [],
+    "validation_macro": {"median_angular_error_deg": 82.44, "direction_sign_accuracy": 0.511, "epe_improvement_vs_zero": -4.132},
+    "test": {},
+    "controlled_gate_passed": false,
+    "real_gate_passed": false
+  },
+  "normal_fov": {
+    "status": "failed_current_field_diagnostic_only",
+    "fov_results": {
+      "60deg": {"median_angular_error_deg": 92.63, "direction_sign_accuracy": 0.453, "magnitude_spearman": -0.202, "epe_improvement_vs_zero": -4.998},
+      "90deg": {"median_angular_error_deg": 89.09, "direction_sign_accuracy": 0.488, "magnitude_spearman": -0.276, "epe_improvement_vs_zero": -5.608},
+      "120deg": {"median_angular_error_deg": 86.18, "direction_sign_accuracy": 0.508, "magnitude_spearman": -0.340, "epe_improvement_vs_zero": -5.102}
+    },
+    "production_normal_fov_supported": false
+  },
+  "orientation_memory": {
+    "status": "oracle_only",
+    "oracle_metrics": {"tests_passed": 4, "full_so3": true, "rejects_invalid": true},
+    "predicted_metrics": {},
+    "azimuth_ring_status": "visual_azimuth_projection_only"
+  },
+  "angular_feature_memory": {
+    "status": "oracle_only",
+    "size_bytes": 196992,
+    "reanchor_metrics": {},
+    "renders_pixels": false
+  },
+  "depth_inventory": {
+    "searched_roots": ["active RGB+pose index and existing modality inventory"],
+    "usable_depth_trajectories": 0,
+    "usable_flow_trajectories": 0,
+    "depth_type": "none_indexed",
+    "real_rigid_flow_oracle": "implemented"
+  },
+  "translation": {
+    "status": "oracle_only",
+    "scale_mode": "scale_free",
+    "direction_metrics": {},
+    "pure_rotation_false_positive": null,
+    "gate_passed": false
+  },
+  "path_integration": {
+    "status": "not_started",
+    "scale_free_metrics": {},
+    "oracle_metric_metrics": {}
+  },
+  "scene_memory": {
+    "status": "not_started",
+    "descriptor": "",
+    "loop_precision": null,
+    "loop_recall": null,
+    "false_closure_rate": null,
+    "drift_before": null,
+    "drift_after": null
+  },
+  "runtime": {
+    "cpu": {"contract_tests": "passed", "runtime_smoke": "passed", "latency_ms_per_step": 47.13, "finite_outputs": true},
+    "gtx_1050_ti": {"runtime_smoke": "passed", "latency_ms_per_step": 24.17, "peak_memory_mib": 47.08, "finite_outputs": true},
+    "rtx_4060_ti": {"fov_diagnostic": "completed_on_cuda_1", "runtime_smoke": "passed", "latency_ms_per_step": 25.75, "peak_memory_mib": 47.08, "finite_outputs": true},
+    "serialization": "passed",
+    "cpu_cuda_parity": {"status": "passed", "max_abs": 0.0000000298, "tolerance_max_abs": 0.00002},
+    "export": {"status": "not_started"}
+  },
+  "tests": {"passed": 70, "failed": 0, "skipped": 2, "duration_seconds": 4.24},
+  "ci": {},
+  "releases": [{"version": "v0.3.1", "status": "stable_existing", "commit": "970400abafa1273ea1674f73223a5a6e3c055d5b", "tag": "v0.3.1", "pr": 3, "capability": "rotation-only historical baseline"}],
+  "commits": ["6615282", "b5d1f66", "b7cf10d", "f10f9ad", "3f9b12f", "fde2ea9", "094e3f1", "c4a7964"],
+  "pull_requests": [{"number": 2, "state": "open"}, {"number": 3, "state": "merged"}, {"number": 4, "state": "open"}, {"number": 5, "state": "open"}],
+  "accepted_capabilities": ["phone camera and ray-space geometry contract", "bounded deterministic P2 polarity frontend", "oracle SO3/rigid-flow/scale-free geometry"],
+  "experimental_capabilities": ["P3 common-mode ablation", "orientation memory", "angular feature memory"],
+  "failed_capabilities": ["unchanged V1-A phone motion field", "normal-FOV diagnostic for current field"],
+  "oracle_only_capabilities": ["full SO3 state composition", "rotational compensation", "scale-free translation residual", "angular feature memory"],
+  "unresolved_claims": ["learned local field", "normal-FOV production sufficiency", "learned rotation", "translation", "path integration", "scene memory", "runtime/export"],
+  "next_blocker": "repair or replace the local motion field before accepting downstream learned pose capability"
+}

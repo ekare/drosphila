@@ -1,0 +1,16 @@
+{
+  "schema": "flyrot.literature-architecture-matrix.v1",
+  "status": "experimental",
+  "entries": [
+    {"concept": "ON/OFF and T4/T5 cardinal populations", "component": "PhonePolarityFrontend and canonical direction bank", "decision": "abstract contract", "project_status": "polarity golden passed; field failed"},
+    {"concept": "offset excitation and delayed inhibition", "component": "temporal/opponency candidates", "decision": "controlled_ablation", "project_status": "not_started"},
+    {"concept": "LPi multilevel opponency", "component": "LPi-like local inhibition", "decision": "controlled_ablation", "project_status": "not_started"},
+    {"concept": "LPTC wide-field templates", "component": "SO3 global readout", "decision": "controlled_ablation", "project_status": "not_started"},
+    {"concept": "competitive disinhibition", "component": "rotation/common-mode separation", "decision": "controlled_ablation", "project_status": "blocked_by_failed_field"},
+    {"concept": "FlyVis", "component": "teacher/reference", "decision": "reference_only", "project_status": "not_imported"},
+    {"concept": "DROID-SLAM and DPVO", "component": "normal-phone engineering baselines", "decision": "reference_only", "project_status": "not_imported"},
+    {"concept": "ring-attractor heading", "component": "VisualAzimuthRing", "decision": "visual_azimuth_projection_only", "project_status": "oracle_only"},
+    {"concept": "FlyNet", "component": "future compact place descriptor", "decision": "reference_only", "project_status": "not_started"},
+    {"concept": "FLIVVER and motion-based depth", "component": "scale/depth hypotheses", "decision": "reference_only", "project_status": "oracle_only"}
+  ]
+}
