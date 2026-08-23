@@ -1,0 +1,23 @@
+{
+  "schema": "flyrot.retinotopic_motion_field_acceptance.v1",
+  "evidence_class": "PROJECT_EVIDENCE",
+  "commit": "f10f9ad",
+  "status": "failed",
+  "model_frontend": "unchanged V1-A historical P0",
+  "rasters": ["192x108", "256x144", "320x180"],
+  "contexts": [3, 5, 9, 17],
+  "validation_representative": {
+    "192x108_T3": {"median_angular_error_deg": 67.216247, "direction_sign_accuracy": 0.631329, "epe_improvement_vs_zero": -4.932458},
+    "192x108_T5": {"median_angular_error_deg": 55.185317, "direction_sign_accuracy": 0.609234, "epe_improvement_vs_zero": -2.560657},
+    "256x144_T3": {"median_angular_error_deg": 89.092636, "direction_sign_accuracy": 0.487736, "epe_improvement_vs_zero": -5.607651},
+    "256x144_T5": {"median_angular_error_deg": 82.442485, "direction_sign_accuracy": 0.511010, "epe_improvement_vs_zero": -4.132430},
+    "320x180_T3": {"median_angular_error_deg": 86.276725, "direction_sign_accuracy": 0.511343, "epe_improvement_vs_zero": -4.885638},
+    "320x180_T5": {"median_angular_error_deg": 86.632051, "direction_sign_accuracy": 0.514924, "epe_improvement_vs_zero": -3.759837}
+  },
+  "t9_status": "low_observability_and_failed_direction",
+  "t17_status": "no_observable_cells_in_bounded_run",
+  "direction_gate": false,
+  "magnitude_status": "unavailable_un_calibrated",
+  "normal_fov_observability": "not_assessed_by_fov_ablation",
+  "next_required_condition": "repair or replace the local motion field, then run a held-out 60/90/120 degree observability diagnostic before translation."
+}
