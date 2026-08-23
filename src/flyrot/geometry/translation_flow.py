@@ -72,3 +72,28 @@ def scale_free_translation_direction(translation: torch.Tensor, minimum: float =
         raise ValueError("translation must have a final dimension of 3")
     magnitude = torch.linalg.vector_norm(translation, dim=-1, keepdim=True)
     return translation / magnitude.clamp_min(minimum)
+
+
+def compensate_rotational_flow(
+    observed_flow: torch.Tensor,
+    rotation_vector: torch.Tensor,
+    intrinsics: CameraIntrinsics,
+    *,
+    valid: torch.Tensor | None = None,
+) -> dict[str, torch.Tensor]:
+    """Subtract exact rotational flow; this is an oracle/predicted-input primitive."""
+
+    if observed_flow.ndim != 4 or observed_flow.shape[1] != 2:
+        raise ValueError("observed_flow must have shape B,2,H,W")
+    if observed_flow.shape[-2:] != (intrinsics.height, intrinsics.width):
+        raise ValueError("observed_flow raster does not match intrinsics")
+    rotation_flow = exact_rotational_flow(rotation_vector, intrinsics=intrinsics) * torch.tensor(
+        [intrinsics.fx, intrinsics.fy], device=observed_flow.device, dtype=observed_flow.dtype
+    ).view(1, 2, 1, 1)
+    residual = observed_flow - rotation_flow
+    if valid is None:
+        valid = torch.isfinite(residual).all(dim=1)
+    if valid.shape != residual.shape[:1] + residual.shape[-2:]:
+        raise ValueError("valid must have shape B,H,W")
+    residual = torch.where(valid.unsqueeze(1), residual, torch.zeros_like(residual))
+    return {"rotational_flow": rotation_flow, "residual_flow": residual, "valid": valid & torch.isfinite(residual).all(dim=1)}
