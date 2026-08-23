@@ -112,13 +112,25 @@ class RealTextureRotationDataset(Dataset):
     path-free manifest returned by :meth:`manifest`.
     """
 
-    def __init__(self, records: list[dict], *, window_length: int = 3, image_size: tuple[int, int] = (128, 128), limit: int = 48, seed: int = 20260823) -> None:
+    def __init__(
+        self,
+        records: list[dict],
+        *,
+        window_length: int = 3,
+        image_size: tuple[int, int] = (128, 128),
+        limit: int = 48,
+        seed: int = 20260823,
+        horizontal_fov_deg: float | None = None,
+    ) -> None:
         if window_length not in {3, 5, 7, 9, 17}:
             raise ValueError("window_length must be one of 3, 5, 7, 9, or 17")
         self.records = records
         self.window_length = window_length
         self.image_size = (int(image_size[0]), int(image_size[1]))
         self.seed = int(seed)
+        if horizontal_fov_deg is not None and not 1.0 < float(horizontal_fov_deg) < 179.0:
+            raise ValueError("horizontal_fov_deg must be between 1 and 179 degrees")
+        self.horizontal_fov_deg = None if horizontal_fov_deg is None else float(horizontal_fov_deg)
         self.examples: list[RotationExample] = []
         families = ("zero", "yaw", "pitch", "roll", "two_axis", "three_axis")
         for index in range(max(0, int(limit))):
@@ -143,6 +155,7 @@ class RealTextureRotationDataset(Dataset):
             "window_length": self.window_length,
             "image_size": list(self.image_size),
             "seed": self.seed,
+            "horizontal_fov_deg": self.horizontal_fov_deg,
             "examples": [
                 {
                     "source_logical_id": item.source_logical_id,
@@ -162,6 +175,17 @@ class RealTextureRotationDataset(Dataset):
         item = self.examples[index]
         width, height = self.image_size
         intrinsics = tartanair_v2_lcam_front_intrinsics(640, 640).resized(width, height)
+        if self.horizontal_fov_deg is not None:
+            focal_x = (width / 2.0) / math.tan(math.radians(self.horizontal_fov_deg) / 2.0)
+            focal_y = focal_x * height / width
+            intrinsics = CameraIntrinsics(
+                fx=focal_x,
+                fy=focal_y,
+                cx=intrinsics.cx,
+                cy=intrinsics.cy,
+                width=width,
+                height=height,
+            )
         base = read_rgb(Path(item.source_path), self.image_size)
         endpoint = rotation_vector(item.family, item.magnitude_deg, item.sign)
         step_vector = endpoint / float(item.window_length - 1)
@@ -193,7 +217,7 @@ class RealTextureRotationDataset(Dataset):
             "valid_mask": torch.from_numpy(np.stack(masks)),
             "observability_mask": torch.from_numpy(np.stack(masks)) * torch.from_numpy(observability[None]),
             "texture_statistics": {"gradient_median": float(np.median(texture)), "gradient_p90": float(np.quantile(texture, 0.9)), "gradient_threshold": texture_threshold},
-            "metadata": {"source_logical_id": item.source_logical_id, "family": item.family, "magnitude_deg": item.magnitude_deg, "sign": item.sign, "window_length": item.window_length, "seed": item.seed, "intrinsics": intrinsics.as_dict(), "crop_resize": {"source": [640, 640], "output": [width, height], "operation": "resize_only"}},
+            "metadata": {"source_logical_id": item.source_logical_id, "family": item.family, "magnitude_deg": item.magnitude_deg, "sign": item.sign, "window_length": item.window_length, "seed": item.seed, "horizontal_fov_deg": self.horizontal_fov_deg, "intrinsics": intrinsics.as_dict(), "crop_resize": {"source": [640, 640], "output": [width, height], "operation": "resize_only"}},
         }
         self._cache[index] = result
         return result

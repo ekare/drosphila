@@ -27,6 +27,8 @@ def test_real_texture_dataset_accepts_phone_temporal_contexts():
 
     assert len(RealTextureRotationDataset([], window_length=9, limit=0)) == 0
     assert len(RealTextureRotationDataset([], window_length=17, limit=0)) == 0
+    dataset = RealTextureRotationDataset([], image_size=(192, 108), horizontal_fov_deg=60.0, limit=0)
+    assert dataset.manifest()["horizontal_fov_deg"] == 60.0
 
 
 def test_weighted_rotation_solver_zero_field_is_finite():
