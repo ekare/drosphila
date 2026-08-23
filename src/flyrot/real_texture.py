@@ -113,8 +113,8 @@ class RealTextureRotationDataset(Dataset):
     """
 
     def __init__(self, records: list[dict], *, window_length: int = 3, image_size: tuple[int, int] = (128, 128), limit: int = 48, seed: int = 20260823) -> None:
-        if window_length not in {3, 5, 7}:
-            raise ValueError("window_length must be 3, 5, or 7")
+        if window_length not in {3, 5, 7, 9, 17}:
+            raise ValueError("window_length must be one of 3, 5, 7, 9, or 17")
         self.records = records
         self.window_length = window_length
         self.image_size = (int(image_size[0]), int(image_size[1]))

@@ -22,6 +22,13 @@ def test_direction_decoder_preserves_polarities():
     assert torch.isfinite(decoded["velocity"]).all()
 
 
+def test_real_texture_dataset_accepts_phone_temporal_contexts():
+    from flyrot.real_texture import RealTextureRotationDataset
+
+    assert len(RealTextureRotationDataset([], window_length=9, limit=0)) == 0
+    assert len(RealTextureRotationDataset([], window_length=17, limit=0)) == 0
+
+
 def test_weighted_rotation_solver_zero_field_is_finite():
     intrinsics = tartanair_v2_lcam_front_intrinsics(32, 24)
     field = torch.zeros(1, 1, 2, 24, 32)
