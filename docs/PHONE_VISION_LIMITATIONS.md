@@ -13,7 +13,9 @@ Current project evidence does not support a phone-camera rotation release.
 - Translation is oracle-only/unstarted.
 - Orientation memory, angular feature memory, scene memory, and mobile export
   are not accepted capabilities.
-- Normal-FOV observability has not yet been isolated from local-field failure.
+- A 60/90/120 degree normal-FOV diagnostic also failed with the unchanged
+  field; this does not prove that normal FOV is impossible, only that FOV is
+  not the sole current explanation.
 
 The project uses Drosophila-inspired, T4/T5-inspired, LPi-like, and
 LPTC-like language only. It does not claim biological equivalence, metric SLAM,

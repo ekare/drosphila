@@ -1,0 +1,315 @@
+schema: flyrot.primary-sources.v1
+verified_on: 2026-08-23
+policy: >-
+  A paper is evidence for a biological or engineering hypothesis, never proof
+  that the FlyRot implementation is correct. External code is not imported
+  without a separate license and reproducibility review.
+sources:
+  - id: REF-MOTION-01
+    title: ON and OFF pathways in Drosophila motion vision
+    authors: [Joesch, Schnell, Raghu, Reiff, Borst]
+    year: 2010
+    venue: Nature
+    doi: 10.1038/nature09545
+    source_type: peer_reviewed_primary
+    official_repository: null
+    repository_ref: null
+    license_status: article_terms_only
+    verification_state: verified_primary_page
+    supports: [H1]
+    project_use: ON/OFF polarity separation
+    implementation: controlled_ablation
+  - id: REF-MOTION-02
+    title: A visual motion detection circuit suggested by Drosophila connectomics
+    authors: [Takemura, Bharioke, Lu, Nern, Vitaladevuni, Rivlin, Katz, Olbris, Plaza, Winston, Rubin, Scheffer, Chklovskii]
+    year: 2013
+    venue: Nature
+    doi: 10.1038/nature12450
+    source_type: peer_reviewed_primary
+    official_repository: null
+    repository_ref: null
+    license_status: article_terms_only
+    verification_state: verified_primary_page
+    supports: [H5, H6]
+    project_use: retinotopic circuit and synaptic-offset hypotheses
+    implementation: controlled_ablation
+  - id: REF-MOTION-03
+    title: A directional tuning map of Drosophila elementary motion detectors
+    authors: [Maisak, Haag, Ammer, Serbe, Meier, Leonhardt, Schilling, Bahl, Rubin, Nern, Dickson, Reiff, Hopp, Borst]
+    year: 2013
+    venue: Nature
+    doi: 10.1038/nature12320
+    source_type: peer_reviewed_primary
+    official_repository: null
+    repository_ref: null
+    license_status: article_terms_only
+    verification_state: verified_primary_page
+    supports: [H1, H4, H5]
+    project_use: four-direction T4/T5 population design
+    implementation: adopt_as_abstract_contract
+  - id: REF-MOTION-04
+    title: Complementary mechanisms create direction selectivity in the fly
+    authors: [Haag, Mishra, Borst]
+    year: 2016
+    venue: eLife
+    doi: 10.7554/eLife.17421
+    source_type: peer_reviewed_primary
+    official_repository: null
+    repository_ref: null
+    license_status: article_terms_only
+    verification_state: registry_reference_pending_direct_page_check
+    supports: [H6]
+    project_use: preferred/null direction control
+    implementation: controlled_ablation
+  - id: REF-MOTION-05
+    title: A common directional tuning mechanism of Drosophila motion-sensing neurons in the ON and in the OFF pathway
+    authors: [Haag, Mishra, Borst]
+    year: 2017
+    venue: eLife
+    doi: 10.7554/eLife.29044
+    source_type: peer_reviewed_primary
+    official_repository: null
+    repository_ref: null
+    license_status: article_terms_only
+    verification_state: verified_primary_page
+    supports: [H1, H4, H6]
+    project_use: ON/OFF directional motif comparison
+    implementation: controlled_ablation
+  - id: REF-MOTION-06
+    title: Simple integration of fast excitation and offset, delayed inhibition computes directional selectivity in Drosophila
+    authors: [Gruntman, Romani, Reiser]
+    year: 2018
+    venue: Nature Neuroscience
+    doi: 10.1038/s41593-017-0046-4
+    source_type: peer_reviewed_primary
+    official_repository: null
+    repository_ref: null
+    license_status: article_terms_only
+    verification_state: verified_primary_page
+    supports: [H6, H10]
+    project_use: temporal excitation/inhibition motif
+    implementation: controlled_ablation
+  - id: REF-MOTION-07
+    title: The computation of directional selectivity in the Drosophila OFF motion pathway
+    authors: [Gruntman, collaborators]
+    year: 2019
+    venue: eLife
+    doi: 10.7554/eLife.50706
+    source_type: peer_reviewed_primary
+    official_repository: null
+    repository_ref: null
+    license_status: article_terms_only
+    verification_state: verified_primary_page
+    supports: [H1, H6]
+    project_use: T5/OFF temporal motif
+    implementation: controlled_ablation
+  - id: REF-MOTION-08
+    title: Connectome-constrained networks predict neural activity across the fly visual system
+    authors: [Lappalainen, Tschopp, Prakhya, McGill, Nern, Shinomiya, Takemura, Gruntman, Macke, Turaga]
+    year: 2024
+    venue: Nature
+    doi: 10.1038/s41586-024-07939-3
+    source_type: peer_reviewed_primary
+    official_repository: TuragaLab/flyvis
+    repository_ref: main_unpinned
+    license_status: MIT_verified
+    verification_state: verified_primary_page_and_repository
+    supports: [H6, H7]
+    project_use: teacher/reference only; no production dependency
+    implementation: reference_only
+  - id: REF-MOTION-09
+    title: Multilevel visual motion opponency in Drosophila
+    authors: [Ammer, Serbe-Kamp, Mauss, Richter, Fendl, Borst]
+    year: 2023
+    venue: Nature Neuroscience
+    doi: 10.1038/s41593-023-01443-z
+    source_type: peer_reviewed_primary
+    official_repository: null
+    repository_ref: null
+    license_status: article_terms_only
+    verification_state: verified_primary_page
+    supports: [H6, H7]
+    project_use: LPi/LPTC opponency ablation
+    implementation: controlled_ablation
+  - id: REF-MOTION-10
+    title: A competitive disinhibitory network for robust optic flow processing in Drosophila
+    authors: [Erginkaya, Cruz, Brotas, collaborators]
+    year: 2025
+    venue: Nature Neuroscience
+    doi: 10.1038/s41593-025-01948-9
+    source_type: peer_reviewed_primary
+    official_repository: null
+    repository_ref: null
+    license_status: article_terms_only
+    verification_state: verified_primary_page
+    supports: [H8]
+    project_use: translation/common-mode robustness ablation
+    implementation: controlled_ablation
+  - id: REF-MOTION-11
+    title: Inhibitory columnar feedback neurons are involved in motion processing in Drosophila
+    authors: [Henning, collaborators]
+    year: 2026
+    venue: eLife
+    doi: 10.7554/eLife.108529.3
+    source_type: peer_reviewed_primary
+    official_repository: null
+    repository_ref: null
+    license_status: article_terms_only
+    verification_state: verified_primary_page
+    supports: [H6]
+    project_use: C2/C3 feedback hypothesis
+    implementation: reference_only
+  - id: REF-MOTION-12
+    title: Eye structure shapes neuron function in Drosophila motion vision
+    authors: [Zhao, Gruntman, Nern, Iyer, Rogers, Koskela, Siwanowicz, Dreher, Flynn, Ludwig, Thomson, Moran, Bruck, Bock, Reiser]
+    year: 2025
+    venue: Nature
+    doi: 10.1038/s41586-025-09276-5
+    source_type: peer_reviewed_primary
+    official_repository: null
+    repository_ref: null
+    license_status: article_cc_by_nc_nd_4
+    verification_state: verified_primary_page
+    supports: [H5]
+    project_use: ray-aware detector ablation
+    implementation: controlled_ablation
+  - id: REF-MOTION-13
+    title: Machine learning discovers numerous new computational principles supporting elementary motion detection
+    authors: [Poleg-Polsky]
+    year: 2026
+    venue: Nature Communications
+    doi: 10.1038/s41467-026-70288-4
+    source_type: peer_reviewed_primary_article_in_press
+    official_repository: null
+    repository_ref: null
+    license_status: article_cc_by_4
+    verification_state: verified_primary_page
+    supports: [H6, H10]
+    project_use: avoid premature commitment to one detector motif
+    implementation: reference_only
+  - id: REF-SELF-01
+    title: Bio-inspired visual ego-rotation sensor for MAVs
+    authors: [Plett, Bahl, Buss, Kühnlenz, Borst]
+    year: 2012
+    venue: Biological Cybernetics
+    doi: 10.1007/s00422-012-0478-6
+    source_type: peer_reviewed_primary
+    official_repository: null
+    repository_ref: null
+    license_status: article_terms_only
+    verification_state: verified_primary_page
+    supports: [H11]
+    project_use: engineering prior and novelty boundary
+    implementation: reference_only
+  - id: REF-VO-01
+    title: DROID-SLAM: Deep Visual SLAM for Monocular, Stereo, and RGB-D Cameras
+    authors: [Teed, Deng]
+    year: 2021
+    venue: NeurIPS
+    doi: 10.48550/arXiv.2108.10869
+    source_type: peer_reviewed_conference_primary
+    official_repository: princeton-vl/DROID-SLAM
+    repository_ref: main_unpinned
+    license_status: BSD_3_clause_verified
+    verification_state: verified_primary_paper_and_repository
+    supports: [H11, H14]
+    project_use: normal-perspective engineering baseline
+    implementation: reference_only
+  - id: REF-VO-02
+    title: Deep Patch Visual Odometry
+    authors: [Teed, Lipson, Deng]
+    year: 2023
+    venue: NeurIPS
+    doi: 10.48550/arXiv.2208.04726
+    source_type: peer_reviewed_conference_primary
+    official_repository: princeton-vl/DPVO
+    repository_ref: main_unpinned
+    license_status: MIT_verified
+    verification_state: verified_primary_paper_and_repository
+    supports: [H11, H14]
+    project_use: sparse temporal correspondence baseline
+    implementation: reference_only
+  - id: REF-NAV-01
+    title: Ring attractor dynamics in the Drosophila central brain
+    authors: [Kim, collaborators]
+    year: 2017
+    venue: Science
+    doi: 10.1126/science.aal4835
+    source_type: peer_reviewed_primary
+    official_repository: null
+    repository_ref: null
+    license_status: article_terms_only
+    verification_state: registry_reference_pending_direct_page_check
+    supports: [H12, H14]
+    project_use: azimuth-memory inspiration only
+    implementation: reference_only
+  - id: REF-NAV-02
+    title: Angular velocity integration in a fly heading circuit
+    authors: [Turner-Evans, Wegener, Rouault, Franconville, Wolff, Seelig, Druckmann, Jayaraman]
+    year: 2017
+    venue: eLife
+    doi: 10.7554/eLife.23496
+    source_type: peer_reviewed_primary
+    official_repository: null
+    repository_ref: null
+    license_status: article_terms_only
+    verification_state: verified_primary_page
+    supports: [H12, H14]
+    project_use: orientation-memory reference
+    implementation: reference_only
+  - id: REF-NAV-03
+    title: Learning accurate path integration in ring attractor models of the head direction system
+    authors: [Vafidis, Owald, D'Albis, Kempter]
+    year: 2022
+    venue: eLife
+    doi: 10.7554/eLife.69841
+    source_type: peer_reviewed_primary
+    official_repository: null
+    repository_ref: null
+    license_status: article_terms_only
+    verification_state: verified_primary_page
+    supports: [H12, H14]
+    project_use: scale-free angular path-integration hypothesis
+    implementation: controlled_ablation
+  - id: REF-PLACE-01
+    title: A Hybrid Compact Neural Architecture for Visual Place Recognition
+    authors: [Chancan, Hernandez-Nunez, Narendra, Barron, Milford]
+    year: 2020
+    venue: IEEE Robotics and Automation Letters
+    doi: 10.1109/LRA.2020.2967324
+    source_type: peer_reviewed_primary
+    official_repository: mchancan/flynet
+    repository_ref: master_unpinned
+    license_status: MIT_academic_commercial_contact_required
+    verification_state: verified_primary_page_and_repository
+    supports: [H14]
+    project_use: compact place-recognition comparison only
+    implementation: reference_only
+  - id: REF-SCALE-01
+    title: FLIVVER: Fly Lobula Inspired Visual Velocity Estimation and Ranging
+    authors: [Lingenfelter, Nag, van Breugel]
+    year: 2020
+    venue: arXiv
+    doi: 10.48550/arXiv.2004.05247
+    source_type: preprint
+    official_repository: null
+    repository_ref: null
+    license_status: publication_terms_only
+    verification_state: verified_preprint_page
+    supports: [H13]
+    project_use: scale ambiguity boundary; no metric claim
+    implementation: reference_only
+  - id: REF-DEPTH-01
+    title: Motion-based depth estimation in Drosophila
+    authors: [Prech, Schmidt-Hamkens, Zuidinga, Leonte, Groschner, Borst, Haag]
+    year: 2026
+    venue: bioRxiv
+    doi: 10.64898/2026.05.07.723493
+    source_type: preprint
+    official_repository: stefanprech/Motion-based-depth-estimation-in-Drosophila
+    repository_ref: main_unpinned
+    license_status: repository_mit_and_preprint_cc_by_nc_4_verified
+    verification_state: verified_preprint_page_and_repository
+    supports: [H13, H14]
+    project_use: external depth hypothesis; no production dependency
+    implementation: reference_only

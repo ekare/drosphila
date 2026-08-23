@@ -7,7 +7,8 @@ The master sequence is gate-driven:
 3. canonical direction and retinotopic field;
 4. LPi/LPTC and competitive-disinhibition ablations;
 5. analytic robust SO(3);
-6. normal-FOV observability diagnostic;
+6. normal-FOV observability diagnostic (completed as a failed upper-bound
+   diagnostic for the current field);
 7. orientation and angular feature memory;
 8. oracle-only rotation compensation and scale-free translation;
 9. oracle-pose topological scene memory;

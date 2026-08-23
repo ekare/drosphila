@@ -14,3 +14,9 @@ two-step test.
 The current v1 candidate is experimental. Its held-out test was slightly worse
 than the locked v0.3 baseline and its real-data directional oracle remained
 unresolved, so orientation memory is implemented but not release-validated.
+
+The master branch also contains `flyrot.orientation_memory.SO3OrientationBelief`
+for confidence-gated, ordered SO(3) composition, `VisualAzimuthRing` as an
+explicitly projection-only 1-D view, and `AngularFeatureMemory` as a compact
+ray-aligned latent store. These are oracle-safe state primitives; they do not
+make the failed phone motion field or learned pose capability pass.

@@ -1,0 +1,13 @@
+{
+  "schema": "flyrot.reference-verification.v1",
+  "status": "experimental",
+  "registry": "references/primary_sources.yaml",
+  "verified_entries": 20,
+  "registry_entries": 22,
+  "peer_reviewed_primary": 18,
+  "preprints": 2,
+  "official_repositories_checked": 5,
+  "pending_direct_page_check": ["REF-MOTION-04", "REF-NAV-01"],
+  "external_code_imported": false,
+  "next_required_condition": "Pin an immutable external repository commit before any runtime dependency or copied implementation is considered."
+}
