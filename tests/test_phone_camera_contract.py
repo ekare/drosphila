@@ -10,10 +10,12 @@ from flyrot.geometry.phone_camera import (
     PhoneCameraInput,
     RollingShutterMetadata,
     apply_crop_resize_history,
+    angular_to_pixel_displacement,
     camera_ray_grid,
     distort_normalized,
     undistort_normalized,
     validate_phone_frames,
+    pixel_to_angular_displacement,
 )
 from flyrot.geometry.rotational_flow import CameraIntrinsics
 
@@ -65,3 +67,10 @@ def test_distorted_ray_grid_is_finite_for_phone_rasters():
     grid = camera_ray_grid(intrinsics, CameraDistortion(model="brown_conrady", k1=0.03, k2=-0.01))
     assert grid.valid.all()
     assert np.isfinite(grid.rays.cpu().numpy()).all()
+
+
+def test_angular_scale_round_trip_is_intrinsics_dependent():
+    pixels = angular_to_pixel_displacement(2.0, 160.0)
+    assert pixels > 0
+    assert pixel_to_angular_displacement(pixels, 160.0) == pytest.approx(2.0)
+    assert angular_to_pixel_displacement(2.0, 320.0) == pytest.approx(2.0 * pixels, rel=1e-6)

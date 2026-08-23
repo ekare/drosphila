@@ -10,6 +10,7 @@ project's flow geometry.
 from __future__ import annotations
 
 from dataclasses import dataclass
+import math
 from typing import Sequence
 
 import torch
@@ -183,6 +184,22 @@ def apply_crop_resize_history(intrinsics: CameraIntrinsics, history: Sequence[Cr
     return result
 
 
+def angular_to_pixel_displacement(angle_deg: float, focal_pixels: float) -> float:
+    """Convert a central-ray angular displacement to a pixel displacement."""
+
+    if focal_pixels <= 0:
+        raise ValueError("focal_pixels must be positive")
+    return float(focal_pixels * math.tan(math.radians(float(angle_deg))))
+
+
+def pixel_to_angular_displacement(pixels: float, focal_pixels: float) -> float:
+    """Convert a central-ray pixel displacement to degrees."""
+
+    if focal_pixels <= 0:
+        raise ValueError("focal_pixels must be positive")
+    return float(math.degrees(math.atan(float(pixels) / focal_pixels)))
+
+
 __all__ = [
     "CameraDistortion",
     "CameraRayGrid",
@@ -191,8 +208,10 @@ __all__ = [
     "PhoneCameraInput",
     "RollingShutterMetadata",
     "apply_crop_resize_history",
+    "angular_to_pixel_displacement",
     "camera_ray_grid",
     "distort_normalized",
+    "pixel_to_angular_displacement",
     "undistort_normalized",
     "validate_phone_frames",
 ]
